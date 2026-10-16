@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fredoka", "Trebuchet MS", sans-serif;
+  --font-sans: "DM Sans", Arial, sans-serif;
+
+  --color-ink: #2d2943;
+  --color-grape: #4b347d;
+  --color-grape2: #684a9a;
+  --color-coral: #fa795f;
+  --color-cream: #fffaf1;
+  --color-paper: #fffcf7;
+  --color-lime: #ecf19f;
+  --color-lavender: #e8dcff;
+  --color-mint: #d8f2df;
+  --color-pink: #ffe2e2;
+  --color-gold: #ffd678;
+  --color-muted: #77727d;
+  --color-line: #e9e4df;
+}
+
+@layer base {
+  :root {
+    --ink: #2d2943;
+    --grape: #4b347d;
+    --grape2: #684a9a;
+    --coral: #fa795f;
+    --cream: #fffaf1;
+    --paper: #fffcf7;
+    --lime: #ecf19f;
+    --lavender: #e8dcff;
+    --mint: #d8f2df;
+    --pink: #ffe2e2;
+    --gold: #ffd678;
+    --muted: #77727d;
+    --line: #e9e4df;
+    --shadow: 0 20px 55px rgba(70, 47, 82, 0.09);
+    --display: "Fredoka", "Trebuchet MS", sans-serif;
+    --text: "DM Sans", Arial, sans-serif;
+
+    /* Compatibilidad con tokens previos */
+    --background-warm: #fffcf7;
+    --surface-white: #ffffff;
+    --surface-muted: #fffaf1;
+    --border-subtle: #e9e4df;
+    --border-strong: #d7d0c7;
+    --text-primary: #2d2943;
+    --text-muted: #77727d;
+    --accent-primary: #4b347d;
+    --accent-primary-hover: #392559;
+    --accent-coral: #fa795f;
+    --accent-coral-hover: #e26249;
+    --badge-mustard: #ffd678;
+    --badge-mustard-text: #684606;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--display);
+  }
+
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes ribbonMove {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ribbon {
+  display: flex;
+  width: max-content;
+  animation: ribbonMove 36s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ribbon {
+    animation: none;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f4ece1;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1c2b0;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b8a590;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

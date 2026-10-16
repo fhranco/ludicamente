@@ -1,0 +1,26 @@
+{
+  "name": "ludicamente-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plataforma de comercio electrónico Lúdicamente (Medusa v2 + Next.js)",
+  "scripts": {
+    "dev:backend": "npm run dev --prefix apps/backend",
+    "dev:storefront": "npm run dev --prefix apps/storefront",
+    "build:backend": "npm run build --prefix apps/backend",
+    "build:storefront": "npm run build --prefix apps/storefront",
+    "build": "npm run build:backend && npm run build:storefront",
+    "seed:demo": "npm run seed:demo --prefix apps/backend",
+    "test": "npm test --prefix apps/storefront",
+    "lint": "npm run lint --prefix apps/backend && npm run lint --prefix apps/storefront"
+  },
+  "keywords": [
+    "medusa",
+    "medusajs",
+    "nextjs",
+    "ecommerce",
+    "chile",
+    "ludicamente"
+  ],
+  "author": "Lúdicamente",
+  "license": "UNLICENSED"
+}
