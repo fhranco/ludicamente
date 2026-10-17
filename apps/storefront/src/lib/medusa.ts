@@ -64,6 +64,8 @@ export async function getChileRegionId(): Promise<string | null> {
   }
 }
 
+import { FALLBACK_CATEGORIES, FALLBACK_PRODUCTS } from "./fallback-data"
+
 /**
  * Obtiene todas las categorías oficiales de productos.
  */
@@ -76,12 +78,13 @@ export async function getCategories(): Promise<MedusaProductCategory[]> {
       next: { revalidate: 60 },
     })
 
-    if (!res.ok) return []
+    if (!res.ok) return FALLBACK_CATEGORIES
     const data = await res.json()
-    return data.product_categories || []
+    const categories = data.product_categories || []
+    return categories.length > 0 ? categories : FALLBACK_CATEGORIES
   } catch (error) {
-    console.error("Error fetching product categories:", error)
-    return []
+    console.warn("Backend Medusa no disponible, usando categorías catálogo base:", error)
+    return FALLBACK_CATEGORIES
   }
 }
 
@@ -119,16 +122,33 @@ export async function getProducts(options?: {
     })
 
     if (!res.ok) {
-      console.error(`Failed to fetch products: ${res.status} ${res.statusText}`)
-      return []
+      console.warn(`Medusa API no respondió (${res.status}), usando catálogo base`)
+      return filterFallbackProducts(options)
     }
 
     const data = await res.json()
-    return data.products || []
+    const products: MedusaProduct[] = data.products || []
+    return products.length > 0 ? products : filterFallbackProducts(options)
   } catch (error) {
-    console.error("Error fetching products:", error)
-    return []
+    console.warn("Backend Medusa no disponible, usando catálogo base de juegos:", error)
+    return filterFallbackProducts(options)
   }
+}
+
+function filterFallbackProducts(options?: {
+  categoryId?: string
+  limit?: number
+}): MedusaProduct[] {
+  let list = [...FALLBACK_PRODUCTS]
+  if (options?.categoryId) {
+    list = list.filter((p) =>
+      p.categories?.some((c) => c.id === options.categoryId || c.handle === options.categoryId)
+    )
+  }
+  if (options?.limit && options.limit > 0) {
+    list = list.slice(0, options.limit)
+  }
+  return list
 }
 
 /**
@@ -157,12 +177,15 @@ export async function getProductByHandle(
       next: { revalidate: 30 },
     })
 
-    if (!res.ok) return null
+    if (!res.ok) {
+      return FALLBACK_PRODUCTS.find((p) => p.handle === handle) || null
+    }
     const data = await res.json()
-    return data.products?.[0] || null
+    const prod = data.products?.[0]
+    return prod || FALLBACK_PRODUCTS.find((p) => p.handle === handle) || null
   } catch (error) {
-    console.error(`Error fetching product handle ${handle}:`, error)
-    return null
+    console.warn(`Error al consultar producto ${handle}, buscando en catálogo base:`, error)
+    return FALLBACK_PRODUCTS.find((p) => p.handle === handle) || null
   }
 }
 
