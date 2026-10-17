@@ -1,15 +1,17 @@
 /**
- * Formateador oficial de moneda CLP para Lúdicamente.
- * Cumple estrictamente con ADR 002 (montos enteros, sin decimales, estilo editorial chileno).
+ * Formateador oficial de precios para Lúdicamente.
+ * Entrega montos limpios con signo peso y separador de miles: ej. $19.990 (sin sufijo ni prefijo CLP).
  */
 export function formatCLP(amount: number | null | undefined): string {
   if (amount === null || amount === undefined || isNaN(amount)) {
     return "$0"
   }
 
-  return new Intl.NumberFormat("es-CL", {
-    style: "currency",
-    currency: "CLP",
-    maximumFractionDigits: 0,
-  }).format(Math.round(amount))
+  const rounded = Math.round(amount)
+  // Formato chileno: punto para miles, sin decimales
+  const formatted = rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+  return `$${formatted}`
 }
+
+export const formatPrice = formatCLP
+

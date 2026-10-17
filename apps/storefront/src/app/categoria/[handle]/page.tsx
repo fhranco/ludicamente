@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${category.name} | Lúdicamente Chile`,
     description:
       category.description ||
-      `Explora la colección ${category.name} en Lúdicamente. Juegos y recursos didácticos con cotización directa en CLP.`,
+      `Explora la colección ${category.name} en Lúdicamente. Juegos y recursos didácticos con cotización directa a WhatsApp.`,
     openGraph: {
       title: `${category.name} | Lúdicamente`,
       description: category.description || undefined,
@@ -53,8 +53,8 @@ export default async function CategoriaPage({ params }: Props) {
           Inicio
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <Link href="/catalogo" className="hover:text-[#4b347d] transition-colors">
-          Catálogo
+        <Link href="/tienda" className="hover:text-[#4b347d] transition-colors">
+          Tienda
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
         <span className="font-extrabold text-[#2d2943]">{category.name}</span>

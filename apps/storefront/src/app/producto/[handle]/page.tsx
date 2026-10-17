@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description:
       product.subtitle ||
       product.description ||
-      `Consulta por ${product.title} en Lúdicamente. Juegos didácticos y de mesa con cotización en CLP a WhatsApp.`,
+      `Consulta por ${product.title} en Lúdicamente. Juegos didácticos y de mesa con cotización directa a WhatsApp.`,
     openGraph: {
       title: `${product.title} | Lúdicamente`,
       description: product.description || undefined,
@@ -86,8 +86,8 @@ export default async function ProductoPage({ params }: Props) {
           Inicio
         </Link>
         <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-        <Link href="/catalogo" className="hover:text-[#4b347d] transition-colors">
-          Catálogo
+        <Link href="/tienda" className="hover:text-[#4b347d] transition-colors">
+          Tienda
         </Link>
         {category && (
           <>

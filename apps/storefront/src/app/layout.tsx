@@ -10,7 +10,7 @@ import { FloatingWhatsApp } from "@/components/common/floating-whatsapp"
 export const metadata: Metadata = {
   title: "Ludicamente ✳ Jugar hace bien | Tienda creativa de juegos y momentos para imaginar",
   description:
-    "Ludicamente: concepto original de tienda creativa de juegos, juguetes y momentos para imaginar. Catálogo y cotización asistida en pesos chilenos (CLP).",
+    "Ludicamente: concepto original de tienda creativa de juegos, juguetes y momentos para imaginar. Catálogo y cotización asistida en pesos chilenos.",
   keywords: [
     "juegos didacticos punta arenas",
     "material didactico magallanes",

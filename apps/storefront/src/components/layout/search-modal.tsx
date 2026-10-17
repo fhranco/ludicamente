@@ -265,11 +265,11 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         <div className="mt-5 pt-4 border-t border-[#efeae5] flex items-center justify-between text-xs text-[#8a8190] font-semibold">
           <span>Presiona <kbd className="px-1.5 py-0.5 rounded bg-[#f3edfb] text-[#4b347d] font-mono text-[10px]">ESC</kbd> para salir</span>
           <Link
-            href="/catalogo"
+            href="/tienda"
             onClick={onClose}
             className="text-[#4b347d] hover:text-[#fa795f] font-bold inline-flex items-center gap-1 transition-colors"
           >
-            <span>Ver catálogo completo</span>
+            <span>Ver toda la tienda</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

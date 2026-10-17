@@ -240,8 +240,8 @@ export function ProductDetailView({
           {/* Breadcrumbs y Compartir */}
           <div className="flex items-center justify-between text-xs font-bold text-[#8a8190]">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <Link href="/catalogo" className="hover:text-[#4b347d]">
-                Catálogo
+              <Link href="/tienda" className="hover:text-[#4b347d]">
+                Tienda
               </Link>
               <ChevronRight className="w-3 h-3 text-[#c4bccb]" />
               {category && (
@@ -315,7 +315,7 @@ export function ProductDetailView({
               </div>
             </div>
             <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#ecf19f] text-[#4b347d]">
-              CLP Oficial
+              Precio oficial
             </span>
           </div>
 
@@ -646,14 +646,14 @@ export function ProductDetailView({
               </h2>
             </div>
             <Link
-              href="/catalogo"
+              href="/tienda"
               className="text-xs font-bold text-[#4b347d] hover:text-[#fa795f] transition-colors hover:underline"
             >
-              Ver catálogo completo →
+              Ver toda la tienda →
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {relatedProducts.map((p, idx) => (
               <ProductCard key={p.id} product={p} index={idx} />
             ))}

@@ -66,24 +66,35 @@ export function Footer() {
             </h3>
             <ul className="space-y-3 text-[0.85rem] font-bold text-[#cfc7d8]">
               <li>
-                <a href="#categorias" className="hover:text-[#ffd678] transition-colors">
+                <Link href="/tienda" className="text-[#ffd678] hover:underline font-black flex items-center gap-1.5">
+                  <span>🧸</span>
+                  <span>Tienda completa</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/#categorias" className="hover:text-[#ffd678] transition-colors">
                   Categorías
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#favoritos" className="hover:text-[#ffd678] transition-colors">
-                  Nuestros favoritos
-                </a>
+                <Link href="/tienda" className="hover:text-[#ffd678] transition-colors">
+                  Tienda completa
+                </Link>
               </li>
               <li>
-                <a href="#edades" className="hover:text-[#ffd678] transition-colors">
+                <Link href="/#edades" className="hover:text-[#ffd678] transition-colors">
                   Juegos por edad
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#filosofia" className="hover:text-[#ffd678] transition-colors">
+                <Link href="/#cumpleanos" className="hover:text-[#ffd678] transition-colors">
+                  Misión Cumpleaños
+                </Link>
+              </li>
+              <li>
+                <Link href="/#filosofia" className="hover:text-[#ffd678] transition-colors">
                   Quiénes somos
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -100,9 +111,9 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#favoritos" className="hover:text-[#ffd678] transition-colors">
+                <Link href="/tienda" className="hover:text-[#ffd678] transition-colors">
                   Ideas para regalar
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#filosofia" className="hover:text-[#ffd678] transition-colors">

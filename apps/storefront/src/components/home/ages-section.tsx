@@ -1,4 +1,5 @@
 import React from "react"
+import Link from "next/link"
 
 interface AgesSectionProps {
   onSelectAge?: (age: number) => void
@@ -58,9 +59,9 @@ export function AgesSection({ onSelectAge }: AgesSectionProps) {
         {/* Grilla de 4 Edades */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4.5">
           {AGE_CARDS.map((card) => (
-            <a
+            <Link
               key={card.age}
-              href="#favoritos"
+              href="/tienda"
               className="group relative min-h-[175px] sm:min-h-[192px] bg-white border-2 border-[#f0e9e3] hover:border-[#4b347d] rounded-[25px] flex flex-col justify-center items-center text-center p-5 overflow-hidden transition-all duration-200 hover:-translate-y-1.5 shadow-sm"
             >
               {/* Sparkle de fondo */}
@@ -86,7 +87,7 @@ export function AgesSection({ onSelectAge }: AgesSectionProps) {
               <small className="font-extrabold text-[0.75rem] text-[#837a84] mt-0.5">
                 {card.subtitle}
               </small>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

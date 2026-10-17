@@ -3,7 +3,6 @@ import { Hero } from "@/components/home/hero"
 import { Ribbon } from "@/components/home/ribbon"
 import { CategoryGrid } from "@/components/home/category-grid"
 import { BirthdayEmergencyFinder } from "@/components/home/birthday-emergency-finder"
-import { FeaturedProducts } from "@/components/home/featured-products"
 import { Editorial } from "@/components/home/editorial"
 import { AgesSection } from "@/components/home/ages-section"
 import { ManifestoSection } from "@/components/home/manifesto-section"
@@ -32,10 +31,7 @@ export default async function HomePage() {
       {/* 3.5. Buscador de Emergencia S.O.S. Cumpleaños */}
       <BirthdayEmergencyFinder products={products} />
 
-      {/* 4. Nuestros Elegidos (Catálogo conectado a Medusa v2) */}
-      <FeaturedProducts products={products} categories={categories} />
-
-      {/* 5. Sección Editorial: Los mejores recuerdos no necesitan batería */}
+      {/* 4. Sección Editorial: Los mejores recuerdos no necesitan batería */}
       <Editorial />
 
       {/* 6. Por Edades: Creciendo Jugando (2+, 4+, 6+, 8+) */}

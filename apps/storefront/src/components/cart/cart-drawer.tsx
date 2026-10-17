@@ -217,7 +217,7 @@ export function CartDrawer() {
             </button>
 
             <p className="text-[0.69rem] font-semibold text-[#817986] text-center leading-relaxed">
-              Calculamos precios vigentes en pesos chilenos (CLP). El stock y despacho se coordinan directamente en la conversación.
+              Calculamos precios vigentes en pesos chilenos. El stock y despacho se coordinan directamente en la conversación.
             </p>
 
             <button

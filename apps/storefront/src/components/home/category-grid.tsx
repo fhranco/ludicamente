@@ -187,9 +187,9 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
             const isLast = idx === CATEGORY_ITEMS.length - 1
 
             return (
-              <a
+              <Link
                 key={item.id}
-                href={`#favoritos`}
+                href={`/categoria/${item.filter}`}
                 style={{ backgroundColor: item.bg }}
                 className={`group relative flex flex-col items-center text-center rounded-[29px] min-h-[240px] sm:min-h-[260px] p-5 sm:p-5 pb-6 transition-all duration-300 hover:-translate-y-2 hover:-rotate-1 shadow-[0_10px_25px_rgba(70,47,82,0.06)] hover:shadow-[0_20px_55px_rgba(70,47,82,0.12)] ${
                   isLast ? "col-span-2 sm:col-span-1" : ""
@@ -212,7 +212,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
                 <small className="font-extrabold text-[0.72rem] text-[#756e7b] mt-1">
                   {item.short}
                 </small>
-              </a>
+              </Link>
             )
           })}
         </div>

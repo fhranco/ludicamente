@@ -197,7 +197,7 @@ export async function getStoreSettings(): Promise<StoreSettings> {
         "[DEMO - POR CONFIGURAR] Catálogo de juegos de mesa y material didáctico — Cotiza y confirma por WhatsApp",
       hero_title: "Aprender y compartir, jugando en familia",
       hero_subtitle:
-        "Explora nuestra cuidada selección de juegos de mesa, juguetes y material didáctico. Elige tus favoritos en CLP y coordina la entrega directamente con nosotros por WhatsApp.",
+        "Explora nuestra cuidada selección de juegos de mesa, juguetes y material didáctico. Elige tus favoritos y coordina la entrega directamente con nosotros por WhatsApp.",
     }
   }
 }

@@ -70,13 +70,13 @@ export function Hero({ settings }: HeroProps) {
 
             {/* Botones de Acción */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-1">
-              <a
-                href="#favoritos"
+              <Link
+                href="/tienda"
                 className="inline-flex items-center justify-center gap-2.5 bg-[#4b347d] hover:bg-[#392559] text-white px-7 py-3.5 sm:py-4 rounded-full font-extrabold text-[0.93rem] shadow-[0_7px_0_#3925591a] hover:-translate-y-0.5 active:translate-y-0 transition-all"
               >
                 <span>Descubrir juguetes</span>
                 <ArrowRight className="w-5 h-5" />
-              </a>
+              </Link>
 
               <a
                 href="#categorias"

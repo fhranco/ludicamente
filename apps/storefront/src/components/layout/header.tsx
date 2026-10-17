@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Search, ShoppingBag, Menu, X } from "@/components/ui/icons"
 import { useCart } from "@/context/cart-context"
 import { SearchModal } from "@/components/layout/search-modal"
@@ -11,6 +12,7 @@ interface HeaderProps {
 }
 
 export function Header({ onOpenSearch }: HeaderProps) {
+  const pathname = usePathname()
   const { totalItems, openCart } = useCart()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchModalOpen, setSearchModalOpen] = useState(false)
@@ -24,11 +26,11 @@ export function Header({ onOpenSearch }: HeaderProps) {
   }
 
   const navLinks = [
+    { name: "Tienda", href: "/tienda", isStore: true },
     { name: "Categorías", href: "/#categorias" },
-    { name: "Nuestros favoritos", href: "/#favoritos" },
     { name: "Por edades", href: "/#edades" },
-    { name: "Nuestra filosofía", href: "/#filosofia" },
-    { name: "Club de ideas", href: "/#club" },
+    { name: "Misión Cumpleaños", href: "/#cumpleanos" },
+    { name: "Filosofía", href: "/#filosofia" },
   ]
 
   return (
@@ -78,17 +80,33 @@ export function Header({ onOpenSearch }: HeaderProps) {
             </Link>
 
             {/* Menú Desktop */}
-            <nav className="hidden lg:flex items-center justify-center gap-7 flex-1 text-sm font-extrabold text-[#2d2943]">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="relative py-1 text-[0.88rem] whitespace-nowrap hover:text-[#4b347d] transition-colors group"
-                >
-                  <span>{link.name}</span>
-                  <span className="absolute bottom-[-6px] left-0 w-full h-[3px] bg-[#fa795f] rounded-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-200" />
-                </Link>
-              ))}
+            <nav className="hidden lg:flex items-center justify-center gap-5 xl:gap-7 flex-1 text-sm font-extrabold text-[#2d2943]">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className={`relative py-1 text-[0.88rem] whitespace-nowrap transition-all group flex items-center gap-1.5 ${
+                      isActive ? "text-[#fa795f] font-black" : "hover:text-[#4b347d]"
+                    } ${
+                      link.isStore
+                        ? "px-3.5 py-1 rounded-full bg-[#fa795f] text-white hover:bg-[#e7694f] shadow-sm hover:scale-105"
+                        : ""
+                    }`}
+                  >
+                    {link.isStore && <span className="text-xs">🧸</span>}
+                    <span>{link.name}</span>
+                    {!link.isStore && (
+                      <span
+                        className={`absolute bottom-[-6px] left-0 w-full h-[3px] bg-[#fa795f] rounded-full transition-transform origin-left duration-200 ${
+                          isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                        }`}
+                      />
+                    )}
+                  </Link>
+                )
+              })}
             </nav>
 
             {/* Acciones & Carrito */}
@@ -140,16 +158,31 @@ export function Header({ onOpenSearch }: HeaderProps) {
               <div className="text-xs font-bold text-[#8a8190] uppercase px-3 py-1 tracking-wider">
                 Explorar Ludicamente
               </div>
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3 py-2.5 rounded-xl font-display font-semibold text-lg text-[#2d2943] hover:bg-[#e9defc]/40 hover:text-[#4b347d] transition-colors"
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl font-display font-semibold text-lg transition-colors ${
+                      isActive
+                        ? "bg-[#fa795f]/15 text-[#fa795f]"
+                        : "text-[#2d2943] hover:bg-[#e9defc]/40 hover:text-[#4b347d]"
+                    } ${link.isStore ? "bg-[#fff5f2] border border-[#fa795f]/30 font-bold" : ""}`}
+                  >
+                    <span className="flex items-center gap-2">
+                      {link.isStore && <span>🧸</span>}
+                      <span>{link.name}</span>
+                    </span>
+                    {link.isStore && (
+                      <span className="text-xs font-black uppercase px-2 py-0.5 rounded-full bg-[#fa795f] text-white">
+                        Catálogo
+                      </span>
+                    )}
+                  </Link>
+                )
+              })}
             </div>
           )}
         </div>
