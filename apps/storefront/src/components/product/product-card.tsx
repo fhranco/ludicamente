@@ -2,11 +2,13 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Plus, Check, Heart } from "@/components/ui/icons"
 import Image from "next/image"
 import { formatCLP } from "@/lib/format-price"
 import { useCart } from "@/context/cart-context"
 import { getProductSkillChips } from "@/lib/didactic-skills"
+import { getProductMedia } from "@/lib/product-media"
 import type { MedusaProduct } from "@/lib/medusa"
 
 interface ProductCardProps {
@@ -27,6 +29,7 @@ const PASTEL_BG = [
 ]
 
 export function ProductCard({ product, index = 0, onQuickView }: ProductCardProps) {
+  const router = useRouter()
   const { addItem, items } = useCart()
   const [isFavorited, setIsFavorited] = useState(false)
 
@@ -35,6 +38,15 @@ export function ProductCard({ product, index = 0, onQuickView }: ProductCardProp
   const categoryName = product.categories?.[0]?.name || "Didáctico"
   const isAlreadyInCart = items.some((i) => i.productId === product.id)
   const bg = PASTEL_BG[index % PASTEL_BG.length]
+  const media = getProductMedia(product)
+  const productUrl = `/producto/${product.handle || product.id}`
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement
+    // Si el clic fue en un botón o link explícito, dejamos que su handler se ejecute
+    if (target.closest("button")) return
+    router.push(productUrl)
+  }
 
   // Badges y stickers volantes dinámicos con temática lúdica y austral
   const BADGES = [
@@ -79,7 +91,10 @@ export function ProductCard({ product, index = 0, onQuickView }: ProductCardProp
   }
 
   return (
-    <article className="group bg-[#fffcf7] border border-[#efeae5] rounded-[22px_14px_24px_14px] sm:rounded-[30px_18px_32px_18px] overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_48px_rgba(64,48,91,0.12)] relative">
+    <article
+      onClick={handleCardClick}
+      className="group bg-[#fffcf7] border border-[#efeae5] rounded-[22px_14px_24px_14px] sm:rounded-[30px_18px_32px_18px] overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_48px_rgba(64,48,91,0.12)] relative cursor-pointer"
+    >
       {/* Media Box con Fondo Pastel y Siluetas Orgánicas Infantiles */}
       <div
         style={{ backgroundColor: bg }}
@@ -113,19 +128,37 @@ export function ProductCard({ product, index = 0, onQuickView }: ProductCardProp
           ✳
         </span>
 
-        {/* Imagen del Producto limpia, nítida y centrada */}
+        {/* Imagen del Producto: Juguete transparente (default) y Niño jugando (hover) */}
         <Link
-          href={`/producto/${product.handle}`}
+          href={productUrl}
           className="w-full h-full relative grid place-items-center p-2 sm:p-3 z-10"
         >
-          {product.thumbnail ? (
-            <Image
-              src={product.thumbnail}
-              alt={product.title}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-contain p-2 sm:p-3 group-hover:scale-105 transition-transform duration-300"
-            />
+          {media.cutout ? (
+            <div className="relative w-full h-full">
+              {/* 1. Solo el juguete con fondo transparente */}
+              <Image
+                src={media.cutout}
+                alt={product.title}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
+                className={`object-contain p-2 sm:p-3 transition-all duration-500 ease-out ${
+                  media.actionPhoto
+                    ? "group-hover:opacity-0 group-hover:scale-95"
+                    : "group-hover:scale-105"
+                }`}
+              />
+
+              {/* 2. Niño/a usando el juguete (se revela en hover) */}
+              {media.actionPhoto && (
+                <Image
+                  src={media.actionPhoto}
+                  alt={`${product.title} en acción con niños`}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover rounded-[18px] sm:rounded-[22px] transition-all duration-500 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-105"
+                />
+              )}
+            </div>
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-center p-3">
               <span className="text-3xl sm:text-4xl mb-1 select-none">🎲</span>
@@ -145,7 +178,7 @@ export function ProductCard({ product, index = 0, onQuickView }: ProductCardProp
 
           <h3 className="font-display font-semibold text-xs sm:text-[1.2rem] leading-snug text-[#2d2943] mt-1 mb-0.5 line-clamp-2">
             <Link
-              href={`/producto/${product.handle}`}
+              href={productUrl}
               className="hover:underline hover:decoration-[#fa795f] hover:underline-offset-4 transition-all"
             >
               {product.title}

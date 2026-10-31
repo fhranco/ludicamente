@@ -10,6 +10,18 @@ interface Props {
   params: Promise<{ handle: string }>
 }
 
+// ISR: Cache estático por 1 hora. Googlebot recibe HTML pre-renderizado con 0% carga de CPU.
+export const revalidate = 3600
+
+export async function generateStaticParams() {
+  try {
+    const products = await getProducts({ limit: 100 })
+    return products.map((p) => ({ handle: p.handle }))
+  } catch {
+    return []
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
   const product = await getProductByHandle(handle)

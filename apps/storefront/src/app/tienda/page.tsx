@@ -2,10 +2,18 @@ import React from "react"
 import { Metadata } from "next"
 import Link from "next/link"
 import { ChevronRight } from "@/components/ui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Baby01Icon,
+  GiftIcon,
+  AlarmClockIcon,
+  CloudSnowIcon,
+} from "@hugeicons/core-free-icons"
 import { getProducts, getCategories } from "@/lib/medusa"
 import { CatalogView } from "@/components/catalog/catalog-view"
 
-export const dynamic = "force-dynamic"
+// ISR: La tienda se regenera en segundo plano cada 30 min.
+export const revalidate = 1800
 
 export const metadata: Metadata = {
   title: "Tienda Oficial | Juegos Didácticos & Juegos de Mesa en Punta Arenas",
@@ -34,7 +42,9 @@ export default async function TiendaPage() {
             </nav>
 
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="text-2xl select-none">🧸</span>
+              <span className="p-1.5 rounded-xl bg-[#ffece8] text-[#fa795f] grid place-items-center">
+                <HugeiconsIcon icon={Baby01Icon} size={22} strokeWidth={1.8} />
+              </span>
               <h1 className="font-display font-black text-2xl sm:text-3xl text-[#2d2943] tracking-tight">
                 Tienda Lúdicamente
               </h1>
@@ -44,20 +54,23 @@ export default async function TiendaPage() {
             </div>
 
             <p className="text-xs sm:text-sm text-[#706478] font-medium">
-              Juegos didácticos en madera, juegos de mesa y estimulación con empaque de regalo y dedicatoria gratis en Punta Arenas 🎁
+              Juegos didácticos en madera, juegos de mesa y estimulación con empaque de regalo y dedicatoria gratis en Punta Arenas
             </p>
           </div>
 
           {/* Sellos de Confianza Artesanales */}
           <div className="flex items-center gap-2 text-xs font-bold text-[#554760] shrink-0">
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#eedcd0] shadow-xs text-[#e0583d]">
-              <span>🎁</span> Moño & tarjeta gratis
+              <HugeiconsIcon icon={GiftIcon} size={15} strokeWidth={2} />
+              <span>Moño & tarjeta gratis</span>
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#eedcd0] shadow-xs text-[#2e7d32]">
-              <span>⚡</span> Retiro hoy en tienda
+              <HugeiconsIcon icon={AlarmClockIcon} size={15} strokeWidth={2} />
+              <span>Retiro hoy en tienda</span>
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#eedcd0] shadow-xs text-[#4b347d] hidden sm:inline-flex">
-              <span>🐧</span> Punta Arenas
+              <HugeiconsIcon icon={CloudSnowIcon} size={15} strokeWidth={1.8} />
+              <span>Punta Arenas</span>
             </span>
           </div>
         </div>

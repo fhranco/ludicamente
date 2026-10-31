@@ -47,11 +47,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "El clásico mundial de negociación y colonización",
     description:
       "Construye caminos, poblados y ciudades negociando lana, madera, trigo y mineral. Ideal para 3 a 4 jugadores desde 9 años.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/catan-edicion-clasica.png",
     images: [
       {
         id: "img_catan_1",
+        url: "/products/cutouts/catan-edicion-clasica.png",
+      },
+      {
+        id: "img_catan_action",
         url: "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=800&q=80",
       },
     ],
@@ -82,11 +85,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "Juego poético y visual de deducción e imaginación",
     description:
       "Cada carta evoca una historia enigmática ilustrada con poesía visual. El juego perfecto para toda la familia.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1606167668584-78701c57f13d?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/dixit-el-arte-de-contar-historias.png",
     images: [
       {
         id: "img_dixit_1",
+        url: "/products/cutouts/dixit-el-arte-de-contar-historias.png",
+      },
+      {
+        id: "img_dixit_action",
         url: "https://images.unsplash.com/photo-1606167668584-78701c57f13d?auto=format&fit=crop&w=800&q=80",
       },
     ],
@@ -118,11 +124,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "54 bloques de madera pulida para pulso y tensión",
     description:
       "Madera suave al tacto con bordes redondeados para horas de entretenimiento seguro y desarrollo motriz.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/torre-de-equilibrio-madera-nativa.png",
     images: [
       {
         id: "img_torre_1",
+        url: "/products/cutouts/torre-de-equilibrio-madera-nativa.png",
+      },
+      {
+        id: "img_torre_action",
         url: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80",
       },
     ],
@@ -154,11 +163,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "Educación tecnológica práctica y energías limpias",
     description:
       "Aprende mecánica, circuitos y captación fotovoltaica armando modelos funcionales sin pilas ni cables.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/kit-robotica-solar-stem.png",
     images: [
       {
         id: "img_robot_1",
+        url: "/products/cutouts/kit-robotica-solar-stem.png",
+      },
+      {
+        id: "img_robot_action",
         url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
       },
     ],
@@ -190,11 +202,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "Ilustración botánica en cartón reciclado extra-grueso",
     description:
       "Corte de precisión con encaje perfecto y acabado mate antirreflejo. Hermosa lámina para armar y enmarcar.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/puzzle-artistico-bosque-lluvioso.png",
     images: [
       {
         id: "img_puzzle_1",
+        url: "/products/cutouts/puzzle-artistico-bosque-lluvioso.png",
+      },
+      {
+        id: "img_puzzle_action",
         url: "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?auto=format&fit=crop&w=800&q=80",
       },
     ],
@@ -225,11 +240,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "Encuentra el símbolo idéntico antes que tus rivales",
     description:
       "Lata metálica de viaje con 55 cartas y 5 modos de juego ultra dinámicos para jugar en cualquier lugar.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1563941402622-4e7a488bcc57?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/dobble-juego-de-reflejos.png",
     images: [
       {
         id: "img_dobble_1",
+        url: "/products/cutouts/dobble-juego-de-reflejos.png",
+      },
+      {
+        id: "img_dobble_action",
         url: "https://images.unsplash.com/photo-1563941402622-4e7a488bcc57?auto=format&fit=crop&w=800&q=80",
       },
     ],
@@ -261,11 +279,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "Tablero de madera con piezas ponderadas y fieltro",
     description:
       "Elegante diseño de tablero plegable en madera con compartimento interior acolchado para cada pieza.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/ajedrez-artesanal-magnetico.png",
     images: [
       {
         id: "img_ajedrez_1",
+        url: "/products/cutouts/ajedrez-artesanal-magnetico.png",
+      },
+      {
+        id: "img_ajedrez_action",
         url: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=800&q=80",
       },
     ],
@@ -297,11 +318,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "Herramienta sensorial para aprendizaje matemático",
     description:
       "Piezas de madera pulida con encastres magnéticos para comprender volumen, fracciones y geometría táctil.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/fracciones-y-cuerpos-geometricos.png",
     images: [
       {
         id: "img_fracciones_1",
+        url: "/products/cutouts/fracciones-y-cuerpos-geometricos.png",
+      },
+      {
+        id: "img_fracciones_action",
         url: "https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=800&q=80",
       },
     ],
@@ -333,11 +357,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "Madera de haya natural no tratada y libre de BPA",
     description:
       "Diseño ergonómico para manos pequeñas, estimula el reflejo de agarre, audición y calma la dentición de forma 100% natural.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/sonajero-mordedor-madera-montessori.png",
     images: [
       {
         id: "img_sonajero_1",
+        url: "/products/cutouts/sonajero-mordedor-madera-montessori.png",
+      },
+      {
+        id: "img_sonajero_action",
         url: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=800&q=80",
       },
     ],
@@ -369,12 +396,15 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "24 piezas de madera maciza con acrílico translúcido",
     description:
       "Explora la luz, los colores y el equilibrio. Al mirar a través de ellos, los niños descubren un mundo teñido de arcoíris.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/bloques-sensoriales-arcoiris-madera.png",
     images: [
       {
         id: "img_bloques_1",
-        url: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80",
+        url: "/products/cutouts/bloques-sensoriales-arcoiris-madera.png",
+      },
+      {
+        id: "img_bloques_action",
+        url: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=800&q=80",
       },
     ],
     categories: [FALLBACK_CATEGORIES[3]],
@@ -405,12 +435,15 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "Pigmentos naturales a base de vegetales y no tóxicos",
     description:
       "Fórmula ultra lavable en ropa y manos. Incluye 12 pastillas de colores intensos y 2 pinceles de cerdas suaves.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/set-acuarelas-ecologicas-infantiles.png",
     images: [
       {
         id: "img_acuarelas_1",
-        url: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80",
+        url: "/products/cutouts/set-acuarelas-ecologicas-infantiles.png",
+      },
+      {
+        id: "img_acuarelas_action",
+        url: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=800&q=80",
       },
     ],
     categories: [FALLBACK_CATEGORIES[4]],
@@ -441,11 +474,14 @@ export const FALLBACK_PRODUCTS: MedusaProduct[] = [
     subtitle: "Óptica de aumento real portátil para explorar la naturaleza",
     description:
       "Compacto y resistente, permite observar hojas, minerales, fibras e insectos con aumento de 60x a 100x en terreno.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80",
+    thumbnail: "/products/cutouts/microscopio-infantil-campo-led.png",
     images: [
       {
         id: "img_microscopio_1",
+        url: "/products/cutouts/microscopio-infantil-campo-led.png",
+      },
+      {
+        id: "img_microscopio_action",
         url: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80",
       },
     ],

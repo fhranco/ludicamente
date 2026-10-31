@@ -4,6 +4,8 @@ import React, { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Search, ShoppingBag, Menu, X } from "@/components/ui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Store01Icon } from "@hugeicons/core-free-icons"
 import { useCart } from "@/context/cart-context"
 import { SearchModal } from "@/components/layout/search-modal"
 
@@ -95,7 +97,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
                         : ""
                     }`}
                   >
-                    {link.isStore && <span className="text-xs">🧸</span>}
+                    {link.isStore && <HugeiconsIcon icon={Store01Icon} size={15} strokeWidth={2} />}
                     <span>{link.name}</span>
                     {!link.isStore && (
                       <span
@@ -172,7 +174,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
                     } ${link.isStore ? "bg-[#fff5f2] border border-[#fa795f]/30 font-bold" : ""}`}
                   >
                     <span className="flex items-center gap-2">
-                      {link.isStore && <span>🧸</span>}
+                      {link.isStore && <HugeiconsIcon icon={Store01Icon} size={18} strokeWidth={2} />}
                       <span>{link.name}</span>
                     </span>
                     {link.isStore && (

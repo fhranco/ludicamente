@@ -10,6 +10,18 @@ interface Props {
   params: Promise<{ handle: string }>
 }
 
+// ISR: Regeneración estática cada 1 hora
+export const revalidate = 3600
+
+export async function generateStaticParams() {
+  try {
+    const categories = await getCategories()
+    return categories.map((c) => ({ handle: c.handle }))
+  } catch {
+    return []
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
   const categories = await getCategories()

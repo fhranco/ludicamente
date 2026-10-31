@@ -5,6 +5,16 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    databaseDriverOptions: {
+      connection: {
+        ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
+      },
+      pool: {
+        min: 1,
+        max: 6, // Límite estricto para evitar saturar el límite de 200 procesos de Hostinger
+        idleTimeoutMillis: 15000,
+      },
+    },
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,

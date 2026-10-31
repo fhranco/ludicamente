@@ -1,8 +1,16 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { usePathname } from "next/navigation"
-import { MessageCircle, X } from "@/components/ui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  WhatsappIcon,
+  Store01Icon,
+  Location01Icon,
+  GiftIcon,
+  CloudSnowIcon,
+} from "@hugeicons/core-free-icons"
+import { X } from "@/components/ui/icons"
 
 interface FloatingWhatsAppProps {
   phone?: string
@@ -13,17 +21,8 @@ export function FloatingWhatsApp({ phone = "+56912345678" }: FloatingWhatsAppPro
   const [isOpen, setIsOpen] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
 
-  const cleanPhone = phone.replace(/[^0-9]/g, "")
-
-  // Auto mostrar speech bubble tras 7 segundos de navegación si no se ha interactuado
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!hasInteracted) {
-        setIsOpen(true)
-      }
-    }, 7000)
-    return () => clearTimeout(timer)
-  }, [hasInteracted])
+  const effectivePhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || phone
+  const cleanPhone = effectivePhone.replace(/[^0-9]/g, "")
 
   const isProductPage = pathname?.startsWith("/producto/")
 
@@ -64,8 +63,8 @@ export function FloatingWhatsApp({ phone = "+56912345678" }: FloatingWhatsAppPro
 
           {/* Encabezado Asesor Lúdico */}
           <div className="flex items-center gap-2.5 pb-2.5 border-b border-[#f0eae1]">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#25D366] to-[#128C7E] grid place-items-center text-white shadow-sm font-bold text-sm">
-              🐧
+            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#25D366] to-[#128C7E] grid place-items-center text-white shadow-sm">
+              <HugeiconsIcon icon={Store01Icon} size={20} strokeWidth={1.8} className="text-white" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
@@ -85,30 +84,36 @@ export function FloatingWhatsApp({ phone = "+56912345678" }: FloatingWhatsAppPro
             {isProductPage ? (
               <p>
                 ¿Tienes dudas con este juego? Te confirmamos stock inmediato en{" "}
-                <strong className="text-[#4b347d]">Punta Arenas</strong> y opciones de retiro en el día. ✨
+                <strong className="text-[#4b347d]">Punta Arenas</strong> y opciones de retiro en el día.
               </p>
             ) : (
               <p>
-                ¡Hola! 👋 Te ayudamos a elegir el juego didáctico perfecto según la edad y coordinar retiro o entrega en{" "}
+                ¡Hola! Te ayudamos a elegir el juego didáctico perfecto según la edad y coordinar retiro o entrega en{" "}
                 <strong className="text-[#4b347d]">Punta Arenas</strong>.
               </p>
             )}
           </div>
 
-          {/* Botones de acción rápida */}
+          {/* Botones de acción rápida con iconos Duotone */}
           <div className="space-y-1.5 pt-1">
             <button
               onClick={() => handleOpenWhatsApp("¿Dónde se puede retirar en Punta Arenas?")}
               className="w-full text-left px-3 py-1.5 rounded-xl bg-[#f6f2fb] hover:bg-[#ebdef7] text-[0.74rem] font-bold text-[#4b347d] transition-colors flex items-center justify-between group"
             >
-              <span>📍 ¿Dónde se retira en Punta Arenas?</span>
+              <span className="flex items-center gap-1.5">
+                <HugeiconsIcon icon={Location01Icon} size={16} strokeWidth={1.8} className="text-[#4b347d]" />
+                <span>¿Dónde se retira en Punta Arenas?</span>
+              </span>
               <span className="text-xs group-hover:translate-x-0.5 transition-transform">→</span>
             </button>
             <button
               onClick={() => handleOpenWhatsApp("Busco un regalo para cumpleaños. ¿Qué me recomiendan?")}
               className="w-full text-left px-3 py-1.5 rounded-xl bg-[#fff2ec] hover:bg-[#fedecd] text-[0.74rem] font-bold text-[#fa795f] transition-colors flex items-center justify-between group"
             >
-              <span>🎁 ¿Qué juego recomiendan por edad?</span>
+              <span className="flex items-center gap-1.5">
+                <HugeiconsIcon icon={GiftIcon} size={16} strokeWidth={1.8} className="text-[#fa795f]" />
+                <span>¿Qué juego recomiendan por edad?</span>
+              </span>
               <span className="text-xs group-hover:translate-x-0.5 transition-transform">→</span>
             </button>
           </div>
@@ -118,7 +123,7 @@ export function FloatingWhatsApp({ phone = "+56912345678" }: FloatingWhatsAppPro
             onClick={() => handleOpenWhatsApp()}
             className="mt-3 w-full py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white font-display font-bold text-xs tracking-wide shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
-            <MessageCircle className="w-4 h-4 fill-current" />
+            <HugeiconsIcon icon={WhatsappIcon} size={18} strokeWidth={2} className="text-white" />
             <span>Chatear por WhatsApp ahora</span>
           </button>
         </div>
@@ -137,12 +142,13 @@ export function FloatingWhatsApp({ phone = "+56912345678" }: FloatingWhatsAppPro
         {/* Onda expansiva animada */}
         <span className="absolute -inset-1 rounded-full bg-[#25D366] opacity-35 animate-ping -z-10" />
 
-        <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8 fill-current transition-transform group-hover:rotate-6" />
+        <HugeiconsIcon icon={WhatsappIcon} size={30} strokeWidth={2} className="text-white transition-transform group-hover:rotate-6" />
 
         {/* Badge lateral "Punta Arenas" en pantallas grandes */}
         <span className="hidden sm:inline-flex absolute right-full mr-3.5 bg-[#2d2943] text-white text-[0.72rem] font-extrabold px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
           <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
-          Punta Arenas ❄️
+          <span>Punta Arenas</span>
+          <HugeiconsIcon icon={CloudSnowIcon} size={15} strokeWidth={1.8} className="text-sky-300" />
         </span>
       </button>
     </div>

@@ -49,7 +49,7 @@ export async function getChileRegionId(): Promise<string | null> {
       headers: {
         "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY,
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 3600 },
     })
 
     if (!res.ok) return null
@@ -75,7 +75,7 @@ export async function getCategories(): Promise<MedusaProductCategory[]> {
       headers: {
         "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY,
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 600 },
     })
 
     if (!res.ok) return FALLBACK_CATEGORIES
@@ -118,7 +118,7 @@ export async function getProducts(options?: {
       headers: {
         "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY,
       },
-      next: { revalidate: 30 },
+      next: { revalidate: 300 },
     })
 
     if (!res.ok) {
@@ -174,7 +174,7 @@ export async function getProductByHandle(
       headers: {
         "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY,
       },
-      next: { revalidate: 30 },
+      next: { revalidate: 300 },
     })
 
     if (!res.ok) {
@@ -206,7 +206,7 @@ export async function getStoreSettings(): Promise<StoreSettings> {
       headers: {
         "x-publishable-api-key": MEDUSA_PUBLISHABLE_KEY,
       },
-      next: { revalidate: 30 },
+      next: { revalidate: 600 },
     })
     if (!res.ok) throw new Error("Settings fetch failed")
     const data = await res.json()

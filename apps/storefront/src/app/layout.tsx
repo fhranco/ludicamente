@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { DM_Sans, Fredoka } from "next/font/google"
 import "./globals.css"
 import { CartProvider } from "@/context/cart-context"
 import { TopBanner } from "@/components/layout/top-banner"
@@ -6,6 +7,20 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { CartDrawer } from "@/components/cart/cart-drawer"
 import { FloatingWhatsApp } from "@/components/common/floating-whatsapp"
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+})
+
+const fredoka = Fredoka({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "Ludicamente ✳ Jugar hace bien | Tienda creativa de juegos y momentos para imaginar",
@@ -37,15 +52,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es-CL" className="h-full antialiased scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="es-CL"
+      className={`h-full antialiased scroll-smooth ${dmSans.variable} ${fredoka.variable}`}
+    >
       <body className="min-h-full flex flex-col bg-[#fffcf7] text-[#2d2943] font-sans selection:bg-[#ecf19f] selection:text-[#2d2943]">
         <CartProvider>
           <TopBanner />

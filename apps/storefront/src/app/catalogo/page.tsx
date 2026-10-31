@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation"
+import { redirect, RedirectType } from "next/navigation"
 
 export default function CatalogoPage() {
-  redirect("/tienda")
+  redirect("/tienda", RedirectType.replace)
 }

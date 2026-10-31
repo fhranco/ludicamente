@@ -1,0 +1,15 @@
+/* Paleta referencial del mockup; ajustar según tokens reales del sitio. */
+:root {
+  --ludi-morado: #39265B;
+  --ludi-coral: #FF6C60;
+  --ludi-crema: #FFF7EF;
+  --ludi-lavanda: #EEE4FF;
+  --ludi-menta: #DDF6E6;
+  --ludi-amarillo: #FFF2B3;
+  --ludi-rosa: #FCE4EC;
+  --ludi-radius: 18px;
+}
+.ludi-img {display:block;width:100%;height:100%;object-fit:cover;}
+.ludi-hero-photo {object-fit:cover;object-position:center bottom;}
+.ludi-card-photo {object-fit:cover;aspect-ratio:4/3;border-radius:var(--ludi-radius);}
+@media (max-width:720px){.ludi-hero-photo {object-position:center center;}}

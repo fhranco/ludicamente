@@ -1,5 +1,7 @@
 import React from "react"
 import Link from "next/link"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Store01Icon } from "@hugeicons/core-free-icons"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -67,7 +69,7 @@ export function Footer() {
             <ul className="space-y-3 text-[0.85rem] font-bold text-[#cfc7d8]">
               <li>
                 <Link href="/tienda" className="text-[#ffd678] hover:underline font-black flex items-center gap-1.5">
-                  <span>🧸</span>
+                  <HugeiconsIcon icon={Store01Icon} size={15} strokeWidth={2} />
                   <span>Tienda completa</span>
                 </Link>
               </li>

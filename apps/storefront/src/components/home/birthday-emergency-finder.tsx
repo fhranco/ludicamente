@@ -3,30 +3,112 @@
 import React, { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Check, ArrowRight, ArrowLeft, Sparkles, RefreshCw, Dices, Heart, X } from "@/components/ui/icons"
+import { Check, ArrowRight, ArrowLeft, RefreshCw, X } from "@/components/ui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  RocketIcon,
+  PartyPopperIcon,
+  AlarmClockIcon,
+  GiftIcon,
+  Baby01Icon,
+  PaintBoardIcon,
+  Backpack01Icon,
+  DiceFaces01Icon,
+  AiSparklesIcon,
+  DiscountTag01Icon,
+  StarIcon,
+  CrownIcon,
+  FavouriteIcon,
+  BirthdayCakeIcon,
+  Mail01Icon,
+  ShoppingBag01Icon,
+} from "@hugeicons/core-free-icons"
 import { formatCLP } from "@/lib/format-price"
 import { useCart } from "@/context/cart-context"
 import { getProductSkillChips } from "@/lib/didactic-skills"
+import { getProductMedia } from "@/lib/product-media"
 import type { MedusaProduct } from "@/lib/medusa"
 
 interface BirthdayEmergencyFinderProps {
   products: MedusaProduct[]
 }
 
+function parseIconSize(size: number | string, fallback: number): number {
+  if (typeof size === "number") return size
+  const num = parseInt(size.replace(/[^\d]/g, ""), 10)
+  if (isNaN(num)) return fallback
+  return num <= 12 ? num * 4 : num
+}
+
+function renderEmergencyIcon(id: string, size: number | string = 26) {
+  const s = parseIconSize(size, 26)
+  switch (id) {
+    case "today":
+      return <HugeiconsIcon icon={RocketIcon} size={s} strokeWidth={2} className="text-[#fa795f]" />
+    case "weekend":
+      return <HugeiconsIcon icon={PartyPopperIcon} size={s} strokeWidth={2} className="text-[#e8932b]" />
+    default:
+      return <HugeiconsIcon icon={GiftIcon} size={s} strokeWidth={2} className="text-[#349673]" />
+  }
+}
+
+function renderAgeIcon(id: string, size: number | string = 24) {
+  const s = parseIconSize(size, 24)
+  switch (id) {
+    case "0-2":
+      return <HugeiconsIcon icon={Baby01Icon} size={s} strokeWidth={1.8} className="text-[#8a5fb5]" />
+    case "3-5":
+      return <HugeiconsIcon icon={PaintBoardIcon} size={s} strokeWidth={1.8} className="text-[#fa795f]" />
+    case "6-8":
+      return <HugeiconsIcon icon={Backpack01Icon} size={s} strokeWidth={1.8} className="text-[#2563eb]" />
+    case "9+":
+      return <HugeiconsIcon icon={DiceFaces01Icon} size={s} strokeWidth={1.8} className="text-[#e8932b]" />
+    default:
+      return <HugeiconsIcon icon={AiSparklesIcon} size={s} strokeWidth={1.8} className="text-[#8a5fb5]" />
+  }
+}
+
+function renderBudgetIcon(id: string, size: number | string = 20) {
+  const s = parseIconSize(size, 20)
+  switch (id) {
+    case "15k":
+      return <HugeiconsIcon icon={DiscountTag01Icon} size={s} strokeWidth={2} className="text-[#349673]" />
+    case "30k":
+      return <HugeiconsIcon icon={StarIcon} size={s} strokeWidth={2} className="text-[#e8932b]" />
+    case "plus":
+      return <HugeiconsIcon icon={CrownIcon} size={s} strokeWidth={2} className="text-[#8a5fb5]" />
+    default:
+      return <HugeiconsIcon icon={FavouriteIcon} size={s} strokeWidth={2} className="text-[#fa795f]" />
+  }
+}
+
+function renderStepIcon(step: number, size: number | string = 18) {
+  const s = parseIconSize(size, 18)
+  switch (step) {
+    case 1:
+      return <HugeiconsIcon icon={RocketIcon} size={s} strokeWidth={2} className="text-[#fa795f]" />
+    case 2:
+      return <HugeiconsIcon icon={BirthdayCakeIcon} size={s} strokeWidth={1.8} className="text-[#8a5fb5]" />
+    case 3:
+      return <HugeiconsIcon icon={DiscountTag01Icon} size={s} strokeWidth={2} className="text-[#e8932b]" />
+    default:
+      return <HugeiconsIcon icon={Mail01Icon} size={s} strokeWidth={1.8} className="text-[#349673]" />
+  }
+}
+
 // 4 PASOS LÚDICOS DE LA MISIÓN
 const WIZARD_STEPS = [
-  { step: 1, title: "¿Para cuándo?", icon: "🎈", shortLabel: "Urgencia", color: "#fa795f" },
-  { step: 2, title: "¿Qué edad?", icon: "🎂", shortLabel: "Edad", color: "#8a5fb5" },
-  { step: 3, title: "¿Presupuesto?", icon: "💰", shortLabel: "Presupuesto", color: "#e8932b" },
-  { step: 4, title: "¡Dedicatoria!", icon: "💌", shortLabel: "Tarjeta & Moño", color: "#349673" },
+  { step: 1, title: "¿Para cuándo?", shortLabel: "Fecha", color: "#fa795f" },
+  { step: 2, title: "¿Qué edad?", shortLabel: "Edad", color: "#8a5fb5" },
+  { step: 3, title: "¿Presupuesto?", shortLabel: "Presupuesto", color: "#e8932b" },
+  { step: 4, title: "¡Dedicatoria!", shortLabel: "Tarjeta & Moño", color: "#349673" },
 ]
 
 const EMERGENCY_LEVELS = [
   {
     id: "today",
     label: "¡El cumple es HOY!",
-    badge: "⚡ S.O.S. Exprés",
-    emoji: "🚨",
+    badge: "¡Entrega Hoy!",
     iconBg: "#ffe7e1",
     tagline: "¡Salvamos el festejo en minutos!",
     description: "Retiro inmediato en tienda o despacho veloz en Punta Arenas hoy mismo.",
@@ -35,8 +117,7 @@ const EMERGENCY_LEVELS = [
   {
     id: "weekend",
     label: "Este fin de semana",
-    badge: "🎉 Justo a tiempo",
-    emoji: "⏰",
+    badge: "Justo a tiempo",
     iconBg: "#fef3c7",
     tagline: "Ideal para el cumple de curso",
     description: "Coordinamos entrega para viernes o sábado empacado con dedicatoria.",
@@ -45,8 +126,7 @@ const EMERGENCY_LEVELS = [
   {
     id: "normal",
     label: "Con anticipación",
-    badge: "✨ Con calma y cariño",
-    emoji: "🎁",
+    badge: "Con calma y cariño",
     iconBg: "#dcfce7",
     tagline: "Elige el tesoro más especial",
     description: "Descubre con tiempo el juego más lindo para sorprender y emocionar.",
@@ -59,7 +139,6 @@ const AGE_OPTIONS = [
     id: "0-2",
     label: "0 a 2 años",
     stage: "Primeros pasos",
-    icon: "🍼",
     cardBg: "#f7f2fc",
     activeBg: "#efe4fa",
     borderColor: "#cbabf5",
@@ -70,7 +149,6 @@ const AGE_OPTIONS = [
     id: "3-5",
     label: "3 a 5 años",
     stage: "Manos creativas",
-    icon: "🎨",
     cardBg: "#fff1f3",
     activeBg: "#ffe1e6",
     borderColor: "#fda4af",
@@ -81,7 +159,6 @@ const AGE_OPTIONS = [
     id: "6-8",
     label: "6 a 8 años",
     stage: "Mentes curiosas",
-    icon: "🎒",
     cardBg: "#f0f9ff",
     activeBg: "#e0f2fe",
     borderColor: "#7dd3fc",
@@ -92,7 +169,6 @@ const AGE_OPTIONS = [
     id: "9+",
     label: "9+ años",
     stage: "Grandes desafíos",
-    icon: "♟️",
     cardBg: "#fefce8",
     activeBg: "#fef9c3",
     borderColor: "#fde047",
@@ -103,7 +179,6 @@ const AGE_OPTIONS = [
     id: "all",
     label: "Cualquier edad",
     stage: "¡Para todos!",
-    icon: "✨",
     cardBg: "#faf8f5",
     activeBg: "#f4ebe0",
     borderColor: "#d9cbbf",
@@ -118,7 +193,6 @@ const BUDGET_OPTIONS = [
     label: "Hasta $15.000",
     stage: "Detalle lindo",
     max: 15000,
-    icon: "🏷️",
     cardBg: "#ecfdf5",
     activeBg: "#d1fae5",
     borderColor: "#6ee7b7",
@@ -127,10 +201,9 @@ const BUDGET_OPTIONS = [
   {
     id: "30k",
     label: "$15.000 a $30.000",
-    stage: "⭐ El más elegido",
+    stage: "El más elegido",
     min: 15000,
     max: 30000,
-    icon: "⭐",
     cardBg: "#fff7ed",
     activeBg: "#ffedd5",
     borderColor: "#fdba74",
@@ -139,9 +212,8 @@ const BUDGET_OPTIONS = [
   {
     id: "plus",
     label: "Más de $30.000",
-    stage: "👑 Súper regalo",
+    stage: "Súper regalo",
     min: 30000,
-    icon: "👑",
     cardBg: "#fdf4ff",
     activeBg: "#fae8ff",
     borderColor: "#f0abfc",
@@ -150,8 +222,7 @@ const BUDGET_OPTIONS = [
   {
     id: "all",
     label: "Cualquier presupuesto",
-    stage: "💖 Sin límites",
-    icon: "🎈",
+    stage: "Sin límites",
     cardBg: "#faf8f5",
     activeBg: "#f4ebe0",
     borderColor: "#d9cbbf",
@@ -411,65 +482,116 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
       )}
 
       {/* Decoración de fondo */}
-      <div className="absolute top-4 left-6 text-4xl select-none pointer-events-none opacity-20 animate-bounce">
-        🎈
+      <div className="absolute top-4 left-6 select-none pointer-events-none opacity-20 animate-bounce text-[#fa795f]">
+        <HugeiconsIcon icon={AiSparklesIcon} size={36} strokeWidth={1.5} />
       </div>
-      <div className="absolute top-12 right-8 text-4xl select-none pointer-events-none opacity-20 animate-pulse">
-        🎉
+      <div className="absolute top-12 right-8 select-none pointer-events-none opacity-20 animate-pulse text-[#8a5fb5]">
+        <HugeiconsIcon icon={DiceFaces01Icon} size={36} strokeWidth={1.5} />
       </div>
-      <div className="absolute bottom-8 left-10 text-3xl select-none pointer-events-none opacity-15">
-        🎂
+      <div className="absolute bottom-8 left-10 select-none pointer-events-none opacity-15 text-[#349673]">
+        <HugeiconsIcon icon={BirthdayCakeIcon} size={32} strokeWidth={1.5} />
       </div>
-      <div className="absolute bottom-16 right-12 text-3xl select-none pointer-events-none opacity-15">
-        ⭐
+      <div className="absolute bottom-16 right-12 select-none pointer-events-none opacity-15 text-[#e8932b]">
+        <HugeiconsIcon icon={StarIcon} size={32} strokeWidth={1.5} />
       </div>
 
       <div className="max-w-[1320px] mx-auto px-4 sm:px-8 relative z-10 space-y-10">
         {/* =========================================================================
-            CABECERA PRINCIPAL: "LA FÁBRICA MÁGICA DE REGALOS"
+            CABECERA PRINCIPAL: PROPUESTA APROBADA REGALOS Y CUMPLEAÑOS
            ========================================================================= */}
-        <div className="text-center max-w-3xl mx-auto space-y-3.5">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#fa795f]/15 border-2 border-[#fa795f]/30 text-[#e0583d] text-xs font-black uppercase tracking-wider shadow-sm">
-            <span>🎪</span>
-            <span>LA FÁBRICA MÁGICA DE REGALOS • PUNTA ARENAS</span>
-            <span>✨</span>
-          </div>
+        <div className="bg-[#fff4ea] border-2 border-[#f0dac7] rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 lg:p-12 shadow-[0_15px_40px_rgba(75,52,125,0.06)] overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1.2fr] gap-8 lg:gap-14 items-center">
+            {/* Columna Izquierda: Fotografía Niño con Autos y Corona Coral en tamaño grande */}
+            <div className="relative flex items-center justify-center">
+              <div className="relative w-full max-w-[520px]">
+                {/* Corona Coral Vectorial Flotante */}
+                <div
+                  className="absolute -top-9 sm:-top-12 left-[15%] w-16 sm:w-20 h-auto z-20 pointer-events-none drop-shadow-xs -rotate-6"
+                  aria-hidden="true"
+                >
+                  <Image
+                    src="/home/decorations/corona-coral.svg"
+                    alt=""
+                    width={80}
+                    height={60}
+                    className="w-full h-auto"
+                  />
+                </div>
 
-          <h2 className="font-display font-bold text-3xl sm:text-5xl tracking-[-0.038em] text-[#2d2943] leading-tight">
-            ¿Cumpleaños sorpresa o de curso? <br className="hidden sm:inline" />
-            <span className="text-[#fa795f]">¡Te armamos el regalo perfecto jugando!</span>
-          </h2>
+                {/* Fotografía recortada con fondo transparente destacada en grande */}
+                <div className="relative w-full aspect-[1100/816] flex items-center justify-center">
+                  <Image
+                    src="/home/photos/nino-jugando-autos.webp"
+                    alt="Niño jugando feliz en el suelo con autitos de madera y juguetes creativos"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 520px"
+                    className="object-contain drop-shadow-[0_16px_30px_rgba(75,52,125,0.14)]"
+                  />
+                </div>
+              </div>
+            </div>
 
-          <p className="text-[#6d6475] text-sm sm:text-base font-semibold leading-relaxed max-w-2xl mx-auto">
-            Elige en 4 pasos simples o prueba la ruleta mágica. Te entregamos el juego <strong>empacado con moño y tarjeta dedicatoria gratis</strong>, listo para retirar hoy o con envío a tu puerta.
-          </p>
+            {/* Columna Derecha: Título, Copys y Píldoras Interactivas */}
+            <div className="space-y-4 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-[#ecd8c6] text-[#fa795f] text-[0.72rem] font-extrabold tracking-[0.14em] uppercase shadow-xs">
+                <span>✦</span>
+                <span>LA FORMA MÁS LINDA DE REGALAR, JUGAR Y APRENDER</span>
+                <span>✦</span>
+              </div>
 
-          {/* Botones de acción rápida en cabecera */}
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={handleSurpriseSpin}
-              disabled={isSpinning}
-              className={`group px-5 py-2.5 rounded-full bg-gradient-to-r from-[#ffd678] via-[#fed7aa] to-[#fecdd3] border-2 border-[#f5b84c] text-[#5c3e07] text-xs sm:text-sm font-display font-black shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95 hover:scale-105 ${
-                isSpinning ? "animate-pulse opacity-80" : ""
-              }`}
-            >
-              <span className={`text-base ${isSpinning ? "animate-spin" : "group-hover:rotate-45 transition-transform"}`}>
-                🎲
-              </span>
-              <span>{isSpinning ? "¡Girando ruleta mágica...!" : "¡Girar Ruleta Sorpresa!"}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-white/70 font-extrabold text-[#784e03]">
-                ¡Sorpréndeme!
-              </span>
-            </button>
+              <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-[2.8rem] tracking-[-0.04em] text-[#2d2943] leading-tight">
+                ¿Cumpleaños sorpresa o de curso? <br className="hidden sm:inline" />
+                <span className="text-[#fa795f]">Te armamos el regalo perfecto jugando.</span>
+              </h2>
 
-            <button
-              type="button"
-              onClick={handleViewRecommendations}
-              className="px-5 py-2.5 rounded-full bg-white border-2 border-[#4b347d] text-[#4b347d] hover:bg-[#4b347d] hover:text-white text-xs sm:text-sm font-display font-bold shadow-sm hover:shadow-md transition-all flex items-center gap-2 cursor-pointer active:scale-95"
-            >
-              <span>🎉 Ver lo que recomendamos para ti ({displayProducts.length})</span>
-            </button>
+              <p className="text-[#6d6475] text-sm sm:text-[0.96rem] font-semibold leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Elige el jugador, cuéntanos un poco y te ayudamos a encontrar juegos según su edad, intereses y ocasión. También puedes explorar nuestras sugerencias.
+              </p>
+
+              {/* Botones / Píldoras de exploración interactiva */}
+              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3">
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(2)}
+                  className="px-4.5 py-2.5 rounded-full bg-white border border-[#e8d7c8] hover:border-[#fa795f] text-[#2d2943] text-xs sm:text-sm font-display font-bold shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="w-6 h-6 rounded-full bg-[#ffe7e1] text-[#fa795f] grid place-items-center">
+                    <HugeiconsIcon icon={Baby01Icon} size={14} strokeWidth={2} />
+                  </span>
+                  <span>Para niño o niña</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(1)}
+                  className="px-4.5 py-2.5 rounded-full bg-white border border-[#e8d7c8] hover:border-[#fa795f] text-[#2d2943] text-xs sm:text-sm font-display font-bold shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="w-6 h-6 rounded-full bg-[#fef3c7] text-[#e8932b] grid place-items-center">
+                    <HugeiconsIcon icon={GiftIcon} size={14} strokeWidth={2} />
+                  </span>
+                  <span>Para una ocasión especial</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleViewRecommendations}
+                  className="px-4.5 py-2.5 rounded-full bg-[#4b347d] hover:bg-[#392559] text-white text-xs sm:text-sm font-display font-bold shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <HugeiconsIcon icon={AiSparklesIcon} size={15} strokeWidth={2} className="text-[#ffd678]" />
+                  <span>Ver lo que recomendamos para ti</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSurpriseSpin}
+                  disabled={isSpinning}
+                  className="px-3.5 py-2 rounded-full bg-white/70 border border-[#e8d7c8] text-[#784e03] hover:bg-white text-xs font-display font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <HugeiconsIcon icon={DiceFaces01Icon} size={14} strokeWidth={2} className={isSpinning ? "animate-spin" : ""} />
+                  <span>Ruleta</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -521,7 +643,7 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                       >
                         {isPast ? "✓" : s.step}
                       </span>
-                      <span className="text-base sm:text-lg">{s.icon}</span>
+                      <span className="shrink-0">{renderStepIcon(s.step)}</span>
                     </div>
 
                     {isActive && (
@@ -557,7 +679,9 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
             <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#f3eae0] pb-4">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-2xl p-2 rounded-2xl bg-[#ffece8]">🎈</span>
+                  <span className="p-2 rounded-2xl bg-[#ffece8]">
+                    {renderStepIcon(1, 24)}
+                  </span>
                   <div>
                     <span className="text-[11px] font-black uppercase tracking-wider text-[#fa795f]">
                       Paso 1 de 4 • Coordinación
@@ -590,9 +714,9 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                         <div className="flex items-center justify-between mb-3">
                           <span
                             style={{ backgroundColor: lvl.iconBg }}
-                            className="w-12 h-12 rounded-2xl grid place-items-center text-2xl shadow-xs group-hover:scale-110 transition-transform"
+                            className="w-12 h-12 rounded-2xl grid place-items-center shadow-xs group-hover:scale-110 transition-transform"
                           >
-                            {lvl.emoji}
+                            {renderEmergencyIcon(lvl.id, 28)}
                           </span>
                           <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wide bg-white border border-[#edd7c7] text-[#554060]">
                             {lvl.badge}
@@ -668,8 +792,8 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                       }`}
                     >
                       <div className="flex items-start gap-3">
-                        <span className="w-12 h-12 rounded-2xl bg-white border border-[#eee2db] grid place-items-center text-2xl shadow-xs group-hover:rotate-6 transition-transform shrink-0">
-                          {age.icon}
+                        <span className="w-12 h-12 rounded-2xl bg-white border border-[#eee2db] grid place-items-center shadow-xs group-hover:rotate-6 transition-transform shrink-0">
+                          {renderAgeIcon(age.id, 24)}
                         </span>
                         <div className="min-w-0">
                           <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-white border border-[#e5d8ea] text-[#6b4793] mb-1">
@@ -741,8 +865,8 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                     >
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="w-10 h-10 rounded-xl bg-white border border-[#eedfd2] grid place-items-center text-xl shadow-xs group-hover:scale-110 transition-transform">
-                            {b.icon}
+                          <span className="w-10 h-10 rounded-xl bg-white border border-[#eedfd2] grid place-items-center shadow-xs group-hover:scale-110 transition-transform">
+                            {renderBudgetIcon(b.id, 20)}
                           </span>
                           <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-white border border-[#eedfd2] text-[#845d2e]">
                             {b.stage}
@@ -782,7 +906,9 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
             <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#f3eae0] pb-4">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-2xl p-2 rounded-2xl bg-[#e6f7ef]">💌</span>
+                  <span className="p-2 rounded-2xl bg-[#e6f7ef] text-[#349673] grid place-items-center">
+                    <HugeiconsIcon icon={Mail01Icon} size={24} strokeWidth={1.8} />
+                  </span>
                   <div>
                     <span className="text-[11px] font-black uppercase tracking-wider text-[#349673]">
                       Paso 4 de 4 • Toque Final Mágico
@@ -792,19 +918,20 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                     </h3>
                   </div>
                 </div>
-                <span className="text-xs font-black text-[#349673] bg-[#dcf3e5] px-3.5 py-1 rounded-full border border-[#b2e5c6] self-start sm:self-auto">
-                  🎁 Incluido $0
+                <span className="text-xs font-black text-[#349673] bg-[#dcf3e5] px-3.5 py-1 rounded-full border border-[#b2e5c6] self-start sm:self-auto flex items-center gap-1.5">
+                  <HugeiconsIcon icon={GiftIcon} size={14} strokeWidth={2} />
+                  <span>Incluido $0</span>
                 </span>
               </div>
 
               <div className="bg-[#fffef9] border-2 border-dashed border-[#e3d1c1] rounded-[28px] p-5 sm:p-7 shadow-inner relative space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#f3e6d8]">
                   <div className="flex items-center gap-2 text-xs font-extrabold text-[#705646]">
-                    <span>📮</span>
+                    <HugeiconsIcon icon={Mail01Icon} size={16} strokeWidth={1.8} className="text-[#8a5fb5]" />
                     <span>CORREO LÚDICO • PUNTA ARENAS</span>
                   </div>
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fcedbb] border border-[#f3dd8e] text-[#69480a] text-[11px] font-extrabold">
-                    <span>🎀</span>
+                    <HugeiconsIcon icon={GiftIcon} size={14} strokeWidth={2} className="text-[#845d2e]" />
                     <span>Empacado con moño artesanal</span>
                   </div>
                 </div>
@@ -842,15 +969,15 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-3 border-t border-[#f3e6d8]">
                   <div className="bg-[#faf5ee] p-2.5 rounded-xl border border-[#ede1d3] flex items-center gap-2 text-[11px] font-bold text-[#5e4f66]">
-                    <span>🎀</span>
+                    <HugeiconsIcon icon={GiftIcon} size={16} strokeWidth={2} className="text-[#fa795f]" />
                     <span>Moño de color a mano</span>
                   </div>
                   <div className="bg-[#faf5ee] p-2.5 rounded-xl border border-[#ede1d3] flex items-center gap-2 text-[11px] font-bold text-[#5e4f66]">
-                    <span>💌</span>
+                    <HugeiconsIcon icon={Mail01Icon} size={16} strokeWidth={1.8} className="text-[#8a5fb5]" />
                     <span>Tarjeta con tu mensaje</span>
                   </div>
                   <div className="bg-[#faf5ee] p-2.5 rounded-xl border border-[#ede1d3] flex items-center gap-2 text-[11px] font-bold text-[#5e4f66]">
-                    <span>🛍️</span>
+                    <HugeiconsIcon icon={ShoppingBag01Icon} size={16} strokeWidth={1.8} className="text-[#349673]" />
                     <span>Bolsa bonita de regalo</span>
                   </div>
                 </div>
@@ -890,25 +1017,28 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
               <button
                 type="button"
                 onClick={() => setCurrentStep(1)}
-                className="hover:text-[#fa795f] hover:underline"
+                className="hover:text-[#fa795f] hover:underline flex items-center gap-1"
               >
-                {currentEmergency.emoji} {currentEmergency.label.replace("¡", "").replace("!", "")}
+                {renderEmergencyIcon(currentEmergency.id, 16)}
+                <span>{currentEmergency.label.replace("¡", "").replace("!", "")}</span>
               </button>
               <span>•</span>
               <button
                 type="button"
                 onClick={() => setCurrentStep(2)}
-                className="hover:text-[#8a5fb5] hover:underline"
+                className="hover:text-[#8a5fb5] hover:underline flex items-center gap-1"
               >
-                {currentAge.icon} {currentAge.label}
+                {renderAgeIcon(currentAge.id, 16)}
+                <span>{currentAge.label}</span>
               </button>
               <span>•</span>
               <button
                 type="button"
                 onClick={() => setCurrentStep(3)}
-                className="hover:text-[#e8932b] hover:underline"
+                className="hover:text-[#e8932b] hover:underline flex items-center gap-1"
               >
-                {currentBudget.icon} {currentBudget.label}
+                {renderBudgetIcon(currentBudget.id, 16)}
+                <span>{currentBudget.label}</span>
               </button>
             </div>
 
@@ -932,24 +1062,26 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                   }}
                   className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-gradient-to-r from-[#fa795f] to-[#e85e42] text-white font-display font-bold text-xs sm:text-sm shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 hover:scale-[1.03] animate-pulse"
                 >
-                  <span>🎉 ¡Ver lo que recomendamos para ti!</span>
-                  <span>🎁</span>
+                  <HugeiconsIcon icon={GiftIcon} size={18} strokeWidth={2} />
+                  <span>¡Ver lo que recomendamos para ti!</span>
                 </button>
               )}
             </div>
           </div>
 
-          {/* Banner especial de Urgencia HOY */}
+          {/* Banner especial de Despacho Rápido HOY */}
           {emergencyLevel === "today" && (
-            <div className="mt-6 bg-[#fff0ec] border-2 border-[#fccfbe] rounded-2xl p-3.5 flex items-center justify-between gap-3 text-xs font-bold text-[#b83b21] animate-in fade-in duration-300">
+            <div className="mt-6 bg-[#fff7f4] border-2 border-[#fccfbe] rounded-2xl p-3.5 flex items-center justify-between gap-3 text-xs font-bold text-[#b83b21] animate-in fade-in duration-300">
               <div className="flex items-center gap-2.5">
-                <span className="text-xl animate-bounce">⚡</span>
+                <span className="p-1.5 rounded-xl bg-[#fa795f] text-white shrink-0">
+                  <HugeiconsIcon icon={RocketIcon} size={18} strokeWidth={2} />
+                </span>
                 <span>
-                  <strong>MODO S.O.S. ACTIVO:</strong> Stock físico en Punta Arenas listo para retirar en tienda en minutos o con despacho exprés durante el día.
+                  <strong>DESPACHO RÁPIDO HOY:</strong> Stock físico en Punta Arenas listo para retirar en tienda en minutos o con despacho prioritario durante el día.
                 </span>
               </div>
               <span className="hidden md:inline px-3 py-1 rounded-full bg-[#fa795f] text-white text-[10px] font-extrabold uppercase shrink-0">
-                Prioridad Urgente
+                Entrega Exprés
               </span>
             </div>
           )}
@@ -966,9 +1098,9 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
           <div className="bg-gradient-to-r from-[#fff7f2] via-[#fffbf6] to-[#f4f8f4] border-2 border-[#eedcd0] rounded-[30px] p-6 sm:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#fa795f] text-white text-[11px] font-black uppercase tracking-wider shadow-xs">
-                <span>🎁</span>
+                <HugeiconsIcon icon={GiftIcon} size={14} strokeWidth={2} />
                 <span>SELECCIÓN INTELIGENTE PERSONALIZADA</span>
-                <span>✨</span>
+                <HugeiconsIcon icon={AiSparklesIcon} size={14} strokeWidth={2} />
               </div>
 
               <h3 className="font-display font-bold text-2xl sm:text-3xl text-[#2d2943] leading-tight">
@@ -983,7 +1115,7 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                   onClick={() => setCurrentStep(2)}
                   className="px-3 py-1 rounded-full bg-[#f4ecfa] text-[#714b9c] border border-[#e1d0ed] hover:scale-105 transition-transform flex items-center gap-1 cursor-pointer"
                 >
-                  <span>{currentAge.icon}</span>
+                  {renderAgeIcon(currentAge.id, 14)}
                   <span>{currentAge.label}</span>
                 </button>
                 <button
@@ -991,7 +1123,7 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                   onClick={() => setCurrentStep(3)}
                   className="px-3 py-1 rounded-full bg-[#fef5e7] text-[#9c641b] border border-[#f5dfbc] hover:scale-105 transition-transform flex items-center gap-1 cursor-pointer"
                 >
-                  <span>{currentBudget.icon}</span>
+                  {renderBudgetIcon(currentBudget.id, 14)}
                   <span>{currentBudget.label}</span>
                 </button>
                 <button
@@ -999,14 +1131,14 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                   onClick={() => setCurrentStep(1)}
                   className="px-3 py-1 rounded-full bg-[#ffece8] text-[#c24227] border border-[#f7cdca] hover:scale-105 transition-transform flex items-center gap-1 cursor-pointer"
                 >
-                  <span>{currentEmergency.emoji}</span>
+                  {renderEmergencyIcon(currentEmergency.id, 14)}
                   <span>{currentEmergency.label.replace("¡", "").replace("!", "")}</span>
                 </button>
               </div>
 
               {isFallback && (
                 <p className="text-[11px] font-medium text-[#84758d] italic">
-                  💡 Nota: Mostramos las mejores opciones de la tienda cercanas a tus preferencias.
+                  Nota: Mostramos las mejores opciones de la tienda cercanas a tus preferencias.
                 </p>
               )}
             </div>
@@ -1018,7 +1150,8 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                 onClick={() => setIsModalOpen(true)}
                 className="px-5 py-3 rounded-full bg-[#4b347d] hover:bg-[#3d2968] text-white font-display font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >
-                <span>🔍 Abrir en ventana emergente (Popup)</span>
+                <HugeiconsIcon icon={AiSparklesIcon} size={16} strokeWidth={2} />
+                <span>Abrir en ventana emergente (Popup)</span>
               </button>
 
               <Link
@@ -1032,11 +1165,12 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
 
           {/* Grilla de Productos Recomendados */}
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-            {displayProducts.map((p, idx) => {
+            {displayProducts.map((p) => {
               const variant = p.variants?.[0]
               const price = variant?.calculated_price?.calculated_amount ?? 0
               const skillChips = getProductSkillChips(p.tags)
               const isAdded = addedId === p.id
+              const itemMedia = getProductMedia(p)
 
               return (
                 <div
@@ -1045,28 +1179,45 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                 >
                   {/* Moño festivo en la esquina */}
                   <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ecf19f] text-[#4b347d] text-[10px] font-black shadow-xs">
-                    <span>🎀</span>
+                    <HugeiconsIcon icon={GiftIcon} size={13} strokeWidth={2} />
                     <span>Recomendado Cumples</span>
                   </div>
 
-                  {/* Foto del Producto limpia, nítida y visible */}
+                  {/* Foto del Producto: Juguete transparente (default) y Niño jugando (hover) */}
                   <div className="relative aspect-square w-full rounded-[22px] bg-[#fff5ea] grid place-items-center p-3 mb-4 overflow-hidden select-none">
                     <Link
                       href={`/producto/${p.handle}`}
                       className="w-full h-full relative grid place-items-center z-10"
                     >
-                      {p.thumbnail ? (
-                        <Image
-                          src={p.thumbnail}
-                          alt={p.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-                        />
+                      {itemMedia.cutout ? (
+                        <div className="relative w-full h-full">
+                          {/* 1. Solo el juguete con fondo transparente */}
+                          <Image
+                            src={itemMedia.cutout}
+                            alt={p.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                            className={`object-contain p-2 transition-all duration-500 ease-out ${
+                              itemMedia.actionPhoto
+                                ? "group-hover:opacity-0 group-hover:scale-95"
+                                : "group-hover:scale-105"
+                            }`}
+                          />
+                          {/* 2. Niño/a usando el juguete (se revela en hover) */}
+                          {itemMedia.actionPhoto && (
+                            <Image
+                              src={itemMedia.actionPhoto}
+                              alt={`${p.title} en acción con niños`}
+                              fill
+                              sizes="(max-width: 768px) 100vw, 33vw"
+                              className="object-cover rounded-[16px] transition-all duration-500 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-105"
+                            />
+                          )}
+                        </div>
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-center p-2">
-                          <span className="text-4xl mb-1 select-none">🎁</span>
-                          <span className="text-xs font-bold text-[#8c8293]">Juguete Lúdicamente</span>
+                        <div className="w-full h-full flex flex-col items-center justify-center text-center p-2 text-[#fa795f]">
+                          <HugeiconsIcon icon={GiftIcon} size={36} strokeWidth={1.5} />
+                          <span className="text-xs font-bold text-[#8c8293] mt-1">Juguete Lúdicamente</span>
                         </div>
                       )}
                     </Link>
@@ -1084,7 +1235,7 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                           }}
                           className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border mb-1.5"
                         >
-                          {skillChips[0].icon} {skillChips[0].label}
+                          {skillChips[0].label}
                         </span>
                       )}
 
@@ -1116,11 +1267,11 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                       {isAdded ? (
                         <>
                           <Check className="w-4 h-4 text-white" />
-                          <span>¡Empacado a la bolsa! 🎁</span>
+                          <span>¡Empacado a la bolsa!</span>
                         </>
                       ) : (
                         <>
-                          <span>🎁</span>
+                          <HugeiconsIcon icon={GiftIcon} size={16} strokeWidth={2} />
                           <span>Llevar empacado para regalo</span>
                         </>
                       )}
@@ -1154,9 +1305,9 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
             <div className="p-5 sm:p-7 bg-gradient-to-r from-[#fff3ed] via-[#fff9f4] to-[#f5fbf7] border-b-2 border-[#f0dfd2] flex items-start justify-between gap-4">
               <div className="space-y-1.5">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fa795f] text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
-                  <span>🎈</span>
+                  <HugeiconsIcon icon={GiftIcon} size={13} strokeWidth={2} />
                   <span>MISIÓN DE REGALO COMPLETADA</span>
-                  <span>✨</span>
+                  <HugeiconsIcon icon={AiSparklesIcon} size={13} strokeWidth={2} />
                 </div>
 
                 <h3 className="font-display font-bold text-2xl sm:text-3xl text-[#2d2943] leading-tight">
@@ -1169,7 +1320,7 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
 
                 {giftNote.trim() && (
                   <div className="mt-2 inline-flex items-center gap-2 p-2 rounded-xl bg-white border border-[#ebd8c8] text-xs font-medium text-[#4a3b56]">
-                    <span>💌</span>
+                    <HugeiconsIcon icon={Mail01Icon} size={15} strokeWidth={1.8} className="text-[#8a5fb5]" />
                     <span className="italic line-clamp-1">«{giftNote.trim()}»</span>
                     <span className="text-[10px] font-bold text-[#349673] bg-[#dcf3e5] px-2 py-0.5 rounded-full shrink-0">
                       Moño gratis
@@ -1196,6 +1347,7 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                   const variant = p.variants?.[0]
                   const price = variant?.calculated_price?.calculated_amount ?? 0
                   const isAdded = addedId === p.id
+                  const modalMedia = getProductMedia(p)
 
                   return (
                     <div
@@ -1203,16 +1355,16 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                       className="bg-white border-2 border-[#f0e6dc] rounded-[24px] p-4 flex gap-3.5 items-center hover:border-[#fa795f]/50 transition-all shadow-xs"
                     >
                       <div className="relative w-20 h-20 rounded-[18px] bg-[#fff5ea] shrink-0 p-1.5 overflow-hidden">
-                        {p.thumbnail ? (
+                        {modalMedia.cutout ? (
                           <Image
-                            src={p.thumbnail}
+                            src={modalMedia.cutout}
                             alt={p.title}
                             fill
                             className="object-contain p-1"
                           />
                         ) : (
-                          <div className="w-full h-full grid place-items-center text-xl">
-                            🎁
+                          <div className="w-full h-full grid place-items-center text-[#fa795f]">
+                            <HugeiconsIcon icon={GiftIcon} size={28} strokeWidth={1.5} />
                           </div>
                         )}
                       </div>
@@ -1236,11 +1388,11 @@ export function BirthdayEmergencyFinder({ products }: BirthdayEmergencyFinderPro
                           {isAdded ? (
                             <>
                               <Check className="w-3.5 h-3.5 text-white" />
-                              <span>¡Empacado! 🎁</span>
+                              <span>¡Empacado!</span>
                             </>
                           ) : (
                             <>
-                              <span>🎁</span>
+                              <HugeiconsIcon icon={GiftIcon} size={14} strokeWidth={2} />
                               <span>Llevar empacado</span>
                             </>
                           )}

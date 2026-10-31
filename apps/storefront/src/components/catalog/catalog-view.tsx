@@ -2,6 +2,17 @@
 
 import React, { useState, useMemo } from "react"
 import { Search, SlidersHorizontal, ArrowUpDown, X, RefreshCw } from "@/components/ui/icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  Baby01Icon,
+  PaintBoardIcon,
+  Backpack01Icon,
+  Chess01Icon,
+  StarIcon,
+  Search01Icon,
+  Sorting01Icon,
+  BirthdayCakeIcon,
+} from "@hugeicons/core-free-icons"
 import { ProductCard } from "@/components/product/product-card"
 import type { MedusaProduct, MedusaProductCategory } from "@/lib/medusa"
 
@@ -12,11 +23,11 @@ interface CatalogViewProps {
 }
 
 const AGE_FILTER_OPTIONS = [
-  { id: "all", label: "Todas las edades", icon: "✨" },
-  { id: "0-2", label: "0 a 2 años", icon: "🍼", desc: "Sensorial y madera" },
-  { id: "3-5", label: "3 a 5 años", icon: "🎨", desc: "Creatividad y motricidad" },
-  { id: "6-8", label: "6 a 8 años", icon: "🎒", desc: "Juegos de mesa y retos" },
-  { id: "9+", label: "9+ años", icon: "♟️", desc: "Estrategia y puzzles" },
+  { id: "all", label: "Todas las edades", icon: StarIcon },
+  { id: "0-2", label: "0 a 2 años", icon: Baby01Icon, desc: "Sensorial y madera" },
+  { id: "3-5", label: "3 a 5 años", icon: PaintBoardIcon, desc: "Creatividad y motricidad" },
+  { id: "6-8", label: "6 a 8 años", icon: Backpack01Icon, desc: "Juegos de mesa y retos" },
+  { id: "9+", label: "9+ años", icon: Chess01Icon, desc: "Estrategia y puzzles" },
 ]
 
 const BUDGET_FILTER_OPTIONS = [
@@ -128,8 +139,8 @@ export function CatalogView({
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
           {/* Input de Búsqueda estilo Libreta de Juegos */}
           <div className="relative flex-1">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base select-none pointer-events-none">
-              🔍
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8a7e91] select-none pointer-events-none">
+              <HugeiconsIcon icon={Search01Icon} size={18} strokeWidth={2} />
             </span>
             <input
               type="text"
@@ -152,7 +163,7 @@ export function CatalogView({
 
           {/* Ordenar estilo Sticker de Tienda */}
           <div className="flex items-center gap-1.5 shrink-0 bg-white border-2 border-[#e6d8cb] px-3.5 py-2 rounded-2xl shadow-xs">
-            <span className="text-sm">🔃</span>
+            <HugeiconsIcon icon={Sorting01Icon} size={16} strokeWidth={2} className="text-[#8a7e91]" />
             <span className="text-[11px] font-bold text-[#8a7e91] hidden sm:inline">Ordenar:</span>
             <select
               value={sortBy}
@@ -160,10 +171,10 @@ export function CatalogView({
               className="text-xs font-black text-[#4b347d] bg-transparent focus:outline-none cursor-pointer pr-1"
               aria-label="Ordenar productos"
             >
-              <option value="featured">✨ Destacados Lúdicamente</option>
-              <option value="price-asc">🪙 Menor precio primero</option>
-              <option value="price-desc">👑 Mayor precio primero</option>
-              <option value="name">🔤 Nombre (A - Z)</option>
+              <option value="featured">Destacados Lúdicamente</option>
+              <option value="price-asc">Menor precio primero</option>
+              <option value="price-desc">Mayor precio primero</option>
+              <option value="name">Nombre (A - Z)</option>
             </select>
           </div>
 
@@ -174,7 +185,7 @@ export function CatalogView({
               onClick={clearAllFilters}
               className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#fa795f]/15 hover:bg-[#fa795f] text-[#d44d33] hover:text-white text-xs font-black transition-all cursor-pointer shadow-xs hover:scale-105 active:scale-95 shrink-0"
             >
-              <span>🧹</span>
+              <RefreshCw className="w-3.5 h-3.5" />
               <span>Limpiar filtros</span>
             </button>
           )}
@@ -183,7 +194,7 @@ export function CatalogView({
         {/* Fila 2: Estante de Edades (Píldoras Ilustradas Grandes y Táctiles) */}
         <div className="space-y-1.5 pt-1 border-t border-[#f2e6dc]">
           <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-[#fa795f]">
-            <span>🎂</span>
+            <HugeiconsIcon icon={BirthdayCakeIcon} size={15} strokeWidth={2} />
             <span>Por Edad Recomendada:</span>
           </div>
 
@@ -201,7 +212,7 @@ export function CatalogView({
                       : "bg-white border-2 border-[#eddcd0] text-[#554760] hover:border-[#fa795f] hover:bg-[#fff7f4]"
                   }`}
                 >
-                  <span className="text-sm">{opt.icon}</span>
+                  <HugeiconsIcon icon={opt.icon} size={16} strokeWidth={1.8} />
                   <span>{opt.label}</span>
                 </button>
               )

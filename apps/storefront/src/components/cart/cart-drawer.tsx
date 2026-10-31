@@ -6,6 +6,14 @@ import Link from "next/link"
 import { X, Trash2, Plus, Minus, MessageCircle, ArrowRight } from "@/components/ui/icons"
 import { useCart } from "@/context/cart-context"
 import { formatCLP } from "@/lib/format-price"
+import { getProductMedia } from "@/lib/product-media"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  PartyPopperIcon,
+  DeliveryTruck01Icon,
+  GiftIcon,
+  ShoppingBag01Icon,
+} from "@hugeicons/core-free-icons"
 import { WhatsAppInquiryModal } from "@/components/cart/whatsapp-inquiry-modal"
 
 export function CartDrawer() {
@@ -73,11 +81,13 @@ export function CartDrawer() {
               <div className="flex items-center justify-between text-xs font-extrabold">
                 {isUnlocked ? (
                   <span className="text-[#2b8359] flex items-center gap-1.5">
-                    <span>🎉</span> ¡Despacho Gratis en Punta Arenas Desbloqueado!
+                    <HugeiconsIcon icon={PartyPopperIcon} size={15} strokeWidth={2} />
+                    <span>¡Despacho Gratis en Punta Arenas Desbloqueado!</span>
                   </span>
                 ) : (
                   <span className="text-[#4b347d] flex items-center gap-1.5">
-                    <span>🚚</span> Te faltan <strong className="text-[#fa795f]">{formatCLP(amountRemaining)}</strong> para Despacho Gratis en Punta Arenas
+                    <HugeiconsIcon icon={DeliveryTruck01Icon} size={16} strokeWidth={2} className="text-[#fa795f]" />
+                    <span>Te faltan <strong className="text-[#fa795f]">{formatCLP(amountRemaining)}</strong> para Despacho Gratis en Punta Arenas</span>
                   </span>
                 )}
                 <span className="text-[11px] text-[#7a6f84]">{percent}%</span>
@@ -120,25 +130,29 @@ export function CartDrawer() {
               </button>
             </div>
           ) : (
-            items.map((item) => (
-              <div
-                key={item.variantId}
-                className="grid grid-cols-[80px_1fr_auto] gap-3.5 items-center border-b border-[#e9e4df] py-4 bg-white/70 p-3 rounded-2xl"
-              >
-                {/* Thumbnail Circular Medallón */}
-                <div className="w-[74px] h-[74px] rounded-full border-2 border-white shadow-sm bg-[#f3e9ff] grid place-items-center overflow-hidden shrink-0 relative">
-                  {item.thumbnail ? (
-                    <Image
-                      src={item.thumbnail}
-                      alt={item.title}
-                      fill
-                      sizes="78px"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <span className="text-2xl">🎲</span>
-                  )}
-                </div>
+            items.map((item) => {
+              const itemMedia = getProductMedia({ handle: item.handle })
+              const itemThumb = itemMedia.cutout || item.thumbnail
+
+              return (
+                <div
+                  key={item.variantId}
+                  className="grid grid-cols-[80px_1fr_auto] gap-3.5 items-center border-b border-[#e9e4df] py-4 bg-white/70 p-3 rounded-2xl"
+                >
+                  {/* Thumbnail Circular Medallón */}
+                  <div className="w-[74px] h-[74px] rounded-full border-2 border-white shadow-sm bg-[#fff6f2] grid place-items-center overflow-hidden shrink-0 relative">
+                    {itemThumb ? (
+                      <Image
+                        src={itemThumb}
+                        alt={item.title}
+                        fill
+                        sizes="78px"
+                        className="object-contain p-2"
+                      />
+                    ) : (
+                      <HugeiconsIcon icon={GiftIcon} size={28} strokeWidth={1.5} className="text-[#fa795f]" />
+                    )}
+                  </div>
 
                 {/* Info */}
                 <div className="min-w-0">
@@ -192,8 +206,8 @@ export function CartDrawer() {
                   {formatCLP(item.priceCLP * item.quantity)}
                 </div>
               </div>
-            ))
-          )}
+            )
+          }))}
         </div>
 
         {/* Footer del Carrito */}

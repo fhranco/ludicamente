@@ -1,14 +1,14 @@
 "use client"
 
 import React, { useState } from "react"
+import Link from "next/link"
 import { ProductCard } from "@/components/product/product-card"
 import { ArrowRight } from "@/components/ui/icons"
 import type { MedusaProduct, MedusaProductCategory } from "@/lib/medusa"
 
 interface FeaturedProductsProps {
   products: MedusaProduct[]
-  categories: MedusaProductCategory[]
-  activeAgeFilter?: number | null
+  categories?: MedusaProductCategory[]
 }
 
 const CONCEPT_FILTERS = [
@@ -23,7 +23,6 @@ const CONCEPT_FILTERS = [
 export function FeaturedProducts({
   products,
   categories,
-  activeAgeFilter = null,
 }: FeaturedProductsProps) {
   const [selectedFilter, setSelectedFilter] = useState<string>("all")
 
@@ -33,104 +32,79 @@ export function FeaturedProducts({
     return p.categories?.some((c) => c.handle === selectedFilter)
   })
 
+  // Para la home mostramos los 4 o 8 principales seleccionados
+  const displayProducts = filteredProducts.slice(0, 8)
+
   return (
-    <section className="relative py-20 sm:py-24 bg-white overflow-hidden" id="favoritos">
-      {/* Marca de agua ✳ decorativa en esquina superior */}
-      <div
-        className="absolute top-4 right-[5%] text-[140px] sm:text-[180px] font-display text-[#f5f0e8] leading-none select-none pointer-events-none -z-0"
-        aria-hidden="true"
-      >
-        ✳
-      </div>
-
-      <div className="max-w-[1320px] mx-auto px-4 sm:px-8 relative z-10" id="catalogo">
-        {/* Encabezado */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 mb-8">
+    <section className="relative py-20 sm:py-24 bg-white overflow-hidden" id="recomendados">
+      <div className="max-w-[1320px] mx-auto px-4 sm:px-8 relative z-10">
+        {/* Encabezado según Propuesta Visual Aprobada */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8">
           <div>
-            <div className="inline-flex items-center gap-2 text-[#4b347d] text-[0.72rem] font-extrabold tracking-[0.145em] uppercase">
-              <span className="w-2 h-2 rounded-full bg-[#fa795f] inline-block shadow-[8px_0_0_#ffd678]" />
-              <span className="ml-2">NUESTROS ELEGIDOS</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fff4ea] border border-[#f0dac7] text-[#fa795f] text-[0.72rem] font-extrabold tracking-[0.14em] uppercase mb-2">
+              <span>✦</span>
+              <span>ESTO TAMBIÉN TE PUEDE ENCANTAR</span>
+              <span>✦</span>
             </div>
-            <h2 className="font-display font-semibold text-3xl sm:text-4xl lg:text-[3.8rem] leading-[1.07] tracking-[-0.042em] text-[#2d2943] mt-2">
-              Pequeños juegos.
-              <br />
-              <span className="text-[#fa795f]">Grandes historias.</span>
+            <h2 className="font-display font-semibold text-3xl sm:text-4xl lg:text-[3.2rem] tracking-[-0.04em] text-[#2d2943]">
+              Productos recomendados
             </h2>
+            <p className="text-[#6d6475] text-sm sm:text-base font-semibold mt-1">
+              Juguetes que inspiran y acompañan cada etapa.
+            </p>
           </div>
 
-          <a
-            href="#edades"
-            className="inline-flex items-center gap-2 text-[#4b347d] font-extrabold text-[0.91rem] border-b-2 border-[#4b347d] pb-1 hover:text-[#fa795f] hover:border-[#fa795f] transition-colors whitespace-nowrap self-start sm:self-end"
+          <Link
+            href="/tienda"
+            className="inline-flex items-center justify-center gap-2.5 bg-[#39265B] hover:bg-[#2d1e48] text-white px-6 py-3.5 rounded-full font-extrabold text-[0.92rem] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all self-start sm:self-end whitespace-nowrap"
           >
-            <span>Buscar por edad</span>
+            <span>Ver toda la tienda</span>
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
 
-        {/* Barra de Filtros */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none">
-            {CONCEPT_FILTERS.map((f) => {
-              const isActive = selectedFilter === f.filter
-              return (
-                <button
-                  key={f.filter}
-                  onClick={() => setSelectedFilter(f.filter)}
-                  type="button"
-                  className={`px-4 py-2.5 rounded-full text-[0.82rem] font-extrabold whitespace-nowrap transition-all duration-200 ${
-                    isActive
-                      ? "bg-[#4b347d] text-white shadow-sm"
-                      : "bg-white text-[#7b7180] border-[1.5px] border-[#e8e0de] hover:border-[#4b347d] hover:text-[#4b347d]"
-                  }`}
-                >
-                  {f.label}
-                </button>
-              )
-            })}
-          </div>
-
-          <span className="text-[0.76rem] font-extrabold text-[#8b8390] whitespace-nowrap">
-            {filteredProducts.length}{" "}
-            {filteredProducts.length === 1 ? "juego disponible" : "juegos disponibles"}
-          </span>
+        {/* Barra de Filtros Rápidos */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
+          {CONCEPT_FILTERS.map((f) => {
+            const isActive = selectedFilter === f.filter
+            return (
+              <button
+                key={f.filter}
+                onClick={() => setSelectedFilter(f.filter)}
+                type="button"
+                className={`px-4 py-2 rounded-full text-[0.82rem] font-extrabold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                  isActive
+                    ? "bg-[#fa795f] text-white shadow-sm"
+                    : "bg-[#fffcf7] text-[#6d6475] border border-[#e8d7c8] hover:border-[#fa795f] hover:text-[#fa795f]"
+                }`}
+              >
+                {f.label}
+              </button>
+            )
+          })}
         </div>
 
-        {/* Grilla 4 Columnas */}
-        {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-            {filteredProducts.map((product, idx) => (
+        {/* Grilla de 4 Columnas */}
+        {displayProducts.length > 0 ? (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
+            {displayProducts.map((product, idx) => (
               <ProductCard key={product.id} product={product} index={idx} />
             ))}
           </div>
         ) : (
-          <div className="bg-[#fffaf1] border-2 border-dashed border-[#e7dbd2] rounded-[25px] p-12 text-center max-w-lg mx-auto my-6">
-            <strong className="block font-display font-semibold text-2xl text-[#2d2943] mb-2">
-              Por aquí no hay juegos todavía ☁
+          <div className="bg-[#fffaf1] border-2 border-dashed border-[#e7dbd2] rounded-[25px] p-10 text-center max-w-lg mx-auto my-6">
+            <strong className="block font-display font-semibold text-xl text-[#2d2943] mb-2">
+              No hay productos con este filtro
             </strong>
-            <p className="text-[#77727d] text-sm font-semibold mb-5">
-              Prueba con otra categoría o restablece el filtro.
-            </p>
             <button
               onClick={() => setSelectedFilter("all")}
               type="button"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border-[1.5px] border-[#4b347d] text-[#4b347d] text-xs font-extrabold hover:bg-[#4b347d] hover:text-white transition-all"
+              className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#fa795f] text-white text-xs font-extrabold hover:bg-[#ea684e] transition-all cursor-pointer"
             >
-              Ver todos los juegos
+              Ver todos los productos
             </button>
           </div>
         )}
-
-        {/* Pie de Productos */}
-        <div className="text-center mt-12">
-          <button
-            onClick={() => setSelectedFilter("all")}
-            type="button"
-            className="inline-flex items-center justify-center gap-2 bg-transparent hover:bg-[#4b347d] text-[#4b347d] hover:text-white border-[1.5px] border-[#4b347d] px-7 py-3.5 rounded-full font-extrabold text-[0.93rem] hover:-translate-y-0.5 transition-all"
-          >
-            <span>Ver todos los juegos</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
       </div>
     </section>
   )

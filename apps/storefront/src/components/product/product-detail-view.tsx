@@ -19,6 +19,20 @@ import { formatCLP } from "@/lib/format-price"
 import { useCart } from "@/context/cart-context"
 import { ProductCard } from "@/components/product/product-card"
 import { getProductSkillChips } from "@/lib/didactic-skills"
+import { getProductMedia } from "@/lib/product-media"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  AlarmClockIcon,
+  GiftIcon,
+  AiSparklesIcon,
+  CloudSnowIcon,
+  ShoppingBag01Icon,
+  Leaf01Icon,
+  Location01Icon,
+  PackageIcon,
+  ShieldCheckIcon,
+  Idea01Icon,
+} from "@hugeicons/core-free-icons"
 import type { MedusaProduct, MedusaProductVariant } from "@/lib/medusa"
 
 interface ProductDetailViewProps {
@@ -32,12 +46,33 @@ export function ProductDetailView({
 }: ProductDetailViewProps) {
   const { addItem, openCart } = useCart()
 
+  const media = getProductMedia(product)
+
+  // Galería curada: juguete en fondo transparente (cutout) y fotografía en acción real (actionPhoto)
+  const galleryItems = React.useMemo(() => {
+    const list: Array<{ id: string; url: string; label: string; isCutout: boolean }> = []
+    if (media.cutout) {
+      list.push({ id: "cutout", url: media.cutout, label: "Juguete", isCutout: true })
+    }
+    if (media.actionPhoto && media.actionPhoto !== media.cutout) {
+      list.push({ id: "action", url: media.actionPhoto, label: "En acción", isCutout: false })
+    }
+    if (product.images && product.images.length > 0) {
+      product.images.forEach((img, i) => {
+        if (img.url !== media.cutout && img.url !== media.actionPhoto) {
+          list.push({ id: img.id || `img-${i}`, url: img.url, label: `Detalle ${i + 1}`, isCutout: false })
+        }
+      })
+    }
+    return list
+  }, [media.cutout, media.actionPhoto, product.images])
+
   // Estado de variante seleccionada
   const [selectedVariant, setSelectedVariant] = useState<MedusaProductVariant>(
     product.variants?.[0] || ({} as MedusaProductVariant)
   )
   const [selectedImage, setSelectedImage] = useState<string>(
-    product.thumbnail || product.images?.[0]?.url || ""
+    media.cutout || product.thumbnail || product.images?.[0]?.url || ""
   )
   const [imageError, setImageError] = useState(false)
   const [quantity, setQuantity] = useState(1)
@@ -160,38 +195,58 @@ export function ProductDetailView({
     }
   }
 
+  // Enlace directo de consulta 1 a 1 a WhatsApp con datos del juguete
+  const storePhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "+56912345678"
+  const cleanPhone = storePhone.replace(/[^\d]/g, "")
+  const whatsappMsg = `¡Hola Lúdicamente! 🐧 Me gustaría consultar disponibilidad de: *${product.title}* (${formatCLP(currentPriceCLP)}).\n¿Tienen stock disponible para entrega o retiro en Punta Arenas?\nhttps://ludicamente.cl/producto/${product.handle}`
+  const whatsappDirectUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(whatsappMsg)}`
+
   return (
     <div className="space-y-16">
       {/* 1. SECCIÓN PRINCIPAL DE PRODUCTO */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
         {/* Galería de Imágenes (Columna Izquierda) */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="relative aspect-square w-full rounded-[32px] overflow-hidden bg-gradient-to-br from-[#f8f4ff] via-[#fffdf9] to-[#faeee7] border border-[#efeae5] shadow-sm flex items-center justify-center p-8 group select-none">
+          <div className="relative aspect-square w-full rounded-[32px] overflow-hidden bg-gradient-to-br from-[#f8f4ff] via-[#fffdf9] to-[#faeee7] border border-[#efeae5] shadow-sm flex items-center justify-center p-6 sm:p-8 group select-none">
             {/* Sticker Volante Exclusivo Punta Arenas */}
             <span className="absolute top-4 left-4 z-20 -rotate-3 bg-[#ffd678] text-[#4b347d] text-xs font-extrabold px-3.5 py-1.5 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.1)] flex items-center gap-1.5">
-              <span>🐧</span> Stock Local Punta Arenas
+              <HugeiconsIcon icon={CloudSnowIcon} size={15} strokeWidth={2} />
+              <span>Stock Local Punta Arenas</span>
             </span>
 
             {/* Sticker de Enfoque Didáctico */}
-            <span className="absolute top-4 right-4 z-20 rotate-2 bg-white/90 backdrop-blur-sm text-[#fa795f] text-[11px] font-extrabold px-3 py-1.5 rounded-full shadow-sm border border-[#fa795f]/20">
-              🌿 100% Sin Pantallas
+            <span className="absolute top-4 right-4 z-20 rotate-2 bg-white/90 backdrop-blur-sm text-[#fa795f] text-[11px] font-extrabold px-3 py-1.5 rounded-full shadow-sm border border-[#fa795f]/20 flex items-center gap-1">
+              <HugeiconsIcon icon={Leaf01Icon} size={13} strokeWidth={2} />
+              <span>100% Sin Pantallas</span>
             </span>
 
             {selectedImage && !imageError ? (
               <div className="relative w-full h-full">
-                <Image
-                  src={selectedImage}
-                  alt={product.title}
-                  fill
-                  priority
-                  className="object-contain transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 55vw"
-                  onError={() => setImageError(true)}
-                />
+                {selectedImage === media.actionPhoto ? (
+                  <Image
+                    src={selectedImage}
+                    alt={`${product.title} en acción con niños`}
+                    fill
+                    priority
+                    className="object-cover rounded-[26px] transition-transform duration-300 group-hover:scale-102"
+                    sizes="(max-width: 1024px) 100vw, 55vw"
+                    onError={() => setImageError(true)}
+                  />
+                ) : (
+                  <Image
+                    src={selectedImage}
+                    alt={product.title}
+                    fill
+                    priority
+                    className="object-contain p-4 sm:p-6 transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 55vw"
+                    onError={() => setImageError(true)}
+                  />
+                )}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center text-center p-8 bg-white/70 rounded-3xl border border-[#efeae5]">
-                <span className="text-6xl mb-3">🎲</span>
+                <HugeiconsIcon icon={GiftIcon} size={56} strokeWidth={1.5} className="text-[#fa795f] mb-3" />
                 <span className="font-display font-bold text-lg text-[#4b347d]">
                   {product.title}
                 </span>
@@ -202,32 +257,37 @@ export function ProductDetailView({
             )}
           </div>
 
-          {/* Carrusel de Miniaturas (si tiene más de 1 imagen) */}
-          {product.images && product.images.length > 1 && (
-            <div className="flex items-center gap-3 overflow-x-auto pb-2">
-              {product.images.map((img, idx) => {
-                const isSelected = selectedImage === img.url
+          {/* Carrusel de Miniaturas: Juguete, En acción y vistas */}
+          {galleryItems.length > 1 && (
+            <div className="flex items-center gap-3 overflow-x-auto pb-2 pt-1">
+              {galleryItems.map((item) => {
+                const isSelected = selectedImage === item.url
                 return (
                   <button
-                    key={img.id || idx}
+                    key={item.id}
                     type="button"
                     onClick={() => {
-                      setSelectedImage(img.url)
+                      setSelectedImage(item.url)
                       setImageError(false)
                     }}
-                    className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shrink-0 bg-white p-2 ${
+                    className={`relative rounded-2xl overflow-hidden border-2 transition-all shrink-0 bg-white p-1.5 flex items-center gap-2 pr-3 cursor-pointer ${
                       isSelected
-                        ? "border-[#fa795f] shadow-md scale-105"
+                        ? "border-[#fa795f] shadow-md scale-105 ring-2 ring-[#fa795f]/20"
                         : "border-[#efeae5] hover:border-[#4b347d]/40 opacity-75 hover:opacity-100"
                     }`}
                   >
-                    <Image
-                      src={img.url}
-                      alt={`${product.title} miniatura ${idx + 1}`}
-                      fill
-                      sizes="80px"
-                      className="object-contain"
-                    />
+                    <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-[#fff7f4] shrink-0">
+                      <Image
+                        src={item.url}
+                        alt={item.label}
+                        fill
+                        sizes="48px"
+                        className={item.isCutout ? "object-contain p-1" : "object-cover"}
+                      />
+                    </div>
+                    <span className="text-xs font-bold text-[#2d2943] whitespace-nowrap">
+                      {item.label}
+                    </span>
                   </button>
                 )
               })}
@@ -322,7 +382,7 @@ export function ProductDetailView({
           {/* Reloj Cuenta Atrás para Despacho Hoy en Punta Arenas */}
           <div className="bg-[#fff4ed] border border-[#fcd5c3] rounded-2xl p-3.5 flex items-center justify-between text-xs font-bold text-[#8c3b28]">
             <div className="flex items-center gap-2">
-              <span className="text-lg animate-pulse">⏰</span>
+              <HugeiconsIcon icon={AlarmClockIcon} size={22} strokeWidth={2} className="text-[#fa795f] animate-pulse shrink-0" />
               <div>
                 <span className="block font-display font-bold text-[#2d2943]">
                   Pide hoy para retiro o entrega en Punta Arenas
@@ -397,11 +457,11 @@ export function ProductDetailView({
                 </button>
               </div>
 
-              {/* Botón Principal Coral Lúdico */}
+              {/* Botón 1: Añadir a la Bolsa */}
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className="flex-1 flex items-center justify-center gap-2.5 bg-[#fa795f] hover:bg-[#e7694f] text-white py-3.5 px-5 rounded-full font-display font-bold text-sm shadow-[0_12px_24px_-8px_rgba(250,121,95,0.45)] transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="flex-1 flex items-center justify-center gap-2 bg-[#fa795f] hover:bg-[#e7694f] text-white py-3.5 px-4 rounded-full font-display font-bold text-sm shadow-[0_12px_24px_-8px_rgba(250,121,95,0.45)] transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 {addedFeedback ? (
                   <>
@@ -410,11 +470,23 @@ export function ProductDetailView({
                   </>
                 ) : (
                   <>
-                    <MessageCircle className="w-5 h-5" />
-                    <span>Consultar por WhatsApp</span>
+                    <HugeiconsIcon icon={ShoppingBag01Icon} size={18} strokeWidth={2} />
+                    <span>Añadir a la bolsa</span>
                   </>
                 )}
               </button>
+
+              {/* Botón 2: Consulta directa a WhatsApp */}
+              <a
+                href={whatsappDirectUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white py-3.5 px-4.5 rounded-full font-display font-bold text-sm shadow-[0_10px_20px_rgba(37,211,102,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98] shrink-0"
+              >
+                <MessageCircle className="w-5 h-5 fill-current" />
+                <span className="hidden sm:inline">Consultar disponibilidad</span>
+                <span className="sm:hidden">WhatsApp</span>
+              </a>
             </div>
 
             {/* Aviso de Transparencia Humana y Retiro Local */}
@@ -429,7 +501,9 @@ export function ProductDetailView({
           {/* Sellos Pedagógicos y de Confianza Lúdicamente */}
           <div className="grid grid-cols-2 gap-2.5 pt-2">
             <div className="bg-white border border-[#efeae5] rounded-2xl p-3 flex items-start gap-2.5 shadow-sm">
-              <span className="text-xl">📍</span>
+              <span className="p-1.5 rounded-xl bg-[#e8dcff]/50 text-[#4b347d] shrink-0">
+                <HugeiconsIcon icon={Location01Icon} size={18} strokeWidth={2} />
+              </span>
               <div>
                 <strong className="block font-display font-bold text-xs text-[#2d2943]">
                   Stock Punta Arenas
@@ -441,7 +515,9 @@ export function ProductDetailView({
             </div>
 
             <div className="bg-white border border-[#efeae5] rounded-2xl p-3 flex items-start gap-2.5 shadow-sm">
-              <span className="text-xl">🪵</span>
+              <span className="p-1.5 rounded-xl bg-[#ecf19f]/60 text-[#4b347d] shrink-0">
+                <HugeiconsIcon icon={PackageIcon} size={18} strokeWidth={2} />
+              </span>
               <div>
                 <strong className="block font-display font-bold text-xs text-[#2d2943]">
                   Madera Sustentable
@@ -453,7 +529,9 @@ export function ProductDetailView({
             </div>
 
             <div className="bg-white border border-[#efeae5] rounded-2xl p-3 flex items-start gap-2.5 shadow-sm">
-              <span className="text-xl">🌿</span>
+              <span className="p-1.5 rounded-xl bg-[#dcfce7] text-[#2e7d32] shrink-0">
+                <HugeiconsIcon icon={ShieldCheckIcon} size={18} strokeWidth={2} />
+              </span>
               <div>
                 <strong className="block font-display font-bold text-xs text-[#2d2943]">
                   Libre de Tóxicos
@@ -465,7 +543,9 @@ export function ProductDetailView({
             </div>
 
             <div className="bg-white border border-[#efeae5] rounded-2xl p-3 flex items-start gap-2.5 shadow-sm">
-              <span className="text-xl">🧠</span>
+              <span className="p-1.5 rounded-xl bg-[#fef3c7] text-[#b45309] shrink-0">
+                <HugeiconsIcon icon={Idea01Icon} size={18} strokeWidth={2} />
+              </span>
               <div>
                 <strong className="block font-display font-bold text-xs text-[#2d2943]">
                   Método Montessori
@@ -505,12 +585,12 @@ export function ProductDetailView({
               {/* Producto A (Actual) */}
               <div className="flex-1 bg-white border border-[#efeae5] rounded-2xl p-3 flex items-center gap-3 shadow-sm min-w-[200px]">
                 <div className="w-16 h-16 rounded-full border-2 border-white shadow-sm bg-[#f8f4ff] relative overflow-hidden shrink-0">
-                  {product.thumbnail ? (
+                  {media.cutout || product.thumbnail ? (
                     <Image
-                      src={product.thumbnail}
+                      src={media.cutout || product.thumbnail || ""}
                       alt={product.title}
                       fill
-                      className="object-cover"
+                      className="object-contain p-1"
                     />
                   ) : (
                     <span className="grid place-items-center h-full text-2xl">🎲</span>
@@ -535,31 +615,37 @@ export function ProductDetailView({
               </div>
 
               {/* Producto B (Complementario) */}
-              <div className="flex-1 bg-white border border-[#efeae5] rounded-2xl p-3 flex items-center gap-3 shadow-sm min-w-[200px]">
-                <div className="w-16 h-16 rounded-full border-2 border-white shadow-sm bg-[#ffdfcf] relative overflow-hidden shrink-0">
-                  {companion.thumbnail ? (
-                    <Image
-                      src={companion.thumbnail}
-                      alt={companion.title}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <span className="grid place-items-center h-full text-2xl">🧩</span>
-                  )}
-                </div>
-                <div className="overflow-hidden">
-                  <span className="block text-[11px] font-extrabold text-[#349673] uppercase">
-                    Complemento ideal
-                  </span>
-                  <span className="block font-display font-bold text-xs text-[#2d2943] truncate">
-                    {companion.title}
-                  </span>
-                  <span className="block text-xs font-extrabold text-[#4b347d] mt-0.5">
-                    {formatCLP(companionPriceCLP)}
-                  </span>
-                </div>
-              </div>
+              {(() => {
+                const companionMedia = companion ? getProductMedia(companion) : null
+                const companionImg = companionMedia?.cutout || companion.thumbnail || ""
+                return (
+                  <div className="flex-1 bg-white border border-[#efeae5] rounded-2xl p-3 flex items-center gap-3 shadow-sm min-w-[200px]">
+                    <div className="w-16 h-16 rounded-full border-2 border-white shadow-sm bg-[#ffdfcf] relative overflow-hidden shrink-0">
+                      {companionImg ? (
+                        <Image
+                          src={companionImg}
+                          alt={companion.title}
+                          fill
+                          className="object-contain p-1"
+                        />
+                      ) : (
+                        <span className="grid place-items-center h-full text-2xl">🧩</span>
+                      )}
+                    </div>
+                    <div className="overflow-hidden">
+                      <span className="block text-[11px] font-extrabold text-[#349673] uppercase">
+                        Complemento ideal
+                      </span>
+                      <span className="block font-display font-bold text-xs text-[#2d2943] truncate">
+                        {companion.title}
+                      </span>
+                      <span className="block text-xs font-extrabold text-[#4b347d] mt-0.5">
+                        {formatCLP(companionPriceCLP)}
+                      </span>
+                    </div>
+                  </div>
+                )
+              })()}
             </div>
 
             {/* Caja de Checkout del Combo */}
@@ -596,11 +682,11 @@ export function ProductDetailView({
                 {comboAddedFeedback ? (
                   <>
                     <Check className="w-4 h-4 text-white" />
-                    <span>¡Pack agregado a la bolsa! 🎉</span>
+                    <span>¡Pack agregado a la bolsa!</span>
                   </>
                 ) : (
                   <>
-                    <span>🛒</span>
+                    <HugeiconsIcon icon={ShoppingBag01Icon} size={16} strokeWidth={2} />
                     <span>Agregar combo completo a la bolsa</span>
                   </>
                 )}
@@ -660,6 +746,50 @@ export function ProductDetailView({
           </div>
         </section>
       )}
+
+      {/* 5. BARRA FLOTANTE DE COMPRA MÓVIL (Sticky Mobile Buy Bar) */}
+      <aside
+        aria-label="Acciones de compra móvil"
+        className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#f0eae2] p-3 px-4 flex items-center justify-between gap-3 shadow-[0_-8px_30px_rgba(75,52,125,0.12)] lg:hidden"
+      >
+        <div className="flex flex-col min-w-0">
+          <span className="font-display font-black text-base text-[#4b347d] leading-none">
+            {formatCLP(currentPriceCLP)}
+          </span>
+          <span className="text-[11px] font-semibold text-[#8a8190] truncate max-w-[130px] sm:max-w-[180px] mt-0.5">
+            {product.title}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <a
+            href={whatsappDirectUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Consultar por WhatsApp"
+            className="w-10 h-10 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white grid place-items-center shadow-sm shrink-0 active:scale-95 transition-transform"
+          >
+            <MessageCircle className="w-5 h-5 fill-current" />
+          </a>
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="bg-[#fa795f] hover:bg-[#e7694f] text-white px-4 py-2.5 rounded-full font-display font-bold text-xs shadow-sm flex items-center gap-1.5 active:scale-95 transition-all"
+          >
+            {addedFeedback ? (
+              <>
+                <Check className="w-4 h-4 text-white" />
+                <span>¡Agregado!</span>
+              </>
+            ) : (
+              <>
+                <HugeiconsIcon icon={ShoppingBag01Icon} size={15} strokeWidth={2} />
+                <span>Añadir a la bolsa</span>
+              </>
+            )}
+          </button>
+        </div>
+      </aside>
     </div>
   )
 }
